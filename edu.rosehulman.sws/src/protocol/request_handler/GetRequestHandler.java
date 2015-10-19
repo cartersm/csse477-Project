@@ -8,7 +8,7 @@ import protocol.HttpResponseFactory;
 import protocol.Protocol;
 import server.Server;
 
-public class GetRequestHandler implements RequestHandler {
+public class GetRequestHandler implements IRequestHandler {
 
 	public HttpResponse handle(HttpRequest request, Server server) {
 		HttpResponse response;

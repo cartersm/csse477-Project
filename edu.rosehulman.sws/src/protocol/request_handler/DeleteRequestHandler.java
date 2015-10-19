@@ -8,7 +8,7 @@ import protocol.HttpResponseFactory;
 import protocol.Protocol;
 import server.Server;
 
-public class DeleteRequestHandler implements RequestHandler {
+public class DeleteRequestHandler implements IRequestHandler {
 
 	@Override
 	public HttpResponse handle(HttpRequest request, Server server) {

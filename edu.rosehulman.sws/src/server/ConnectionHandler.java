@@ -45,7 +45,7 @@ import protocol.request_handler.*;
 public class ConnectionHandler implements Runnable {
 	private Server server;
 	private Socket socket;
-	private Map<String, RequestHandler> requestHandlers;
+	private Map<String, IRequestHandler> requestHandlers;
 
 	public ConnectionHandler(Server server, Socket socket) {
 		this.server = server;
@@ -144,7 +144,7 @@ public class ConnectionHandler implements Runnable {
 				// "request.version" string ignoring the case of the letters in both strings
 				// TODO: Fill in the rest of the code here
 			} else {
-				RequestHandler requestHandler = this.requestHandlers.get(request.getMethod().toLowerCase());
+				IRequestHandler requestHandler = this.requestHandlers.get(request.getMethod().toLowerCase());
 				if (requestHandler != null) {
 					requestHandler.handle(request, server);
 				} else {

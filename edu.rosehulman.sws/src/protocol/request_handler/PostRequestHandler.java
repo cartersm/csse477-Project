@@ -14,7 +14,7 @@ import protocol.HttpResponseFactory;
 import protocol.Protocol;
 import server.Server;
 
-public class PostRequestHandler implements RequestHandler {
+public class PostRequestHandler implements IRequestHandler {
 
 	@Override
 	public HttpResponse handle(HttpRequest request, Server server) {

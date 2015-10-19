@@ -4,6 +4,6 @@ import protocol.HttpRequest;
 import protocol.HttpResponse;
 import server.Server;
 
-public interface RequestHandler {
+public interface IRequestHandler {
 	public HttpResponse handle(HttpRequest request, Server server);
 }
