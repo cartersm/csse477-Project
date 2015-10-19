@@ -1,9 +1,16 @@
 package protocol.request_handler;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 
 import protocol.HttpRequest;
 import protocol.HttpResponse;
+import protocol.HttpResponseFactory;
 import protocol.Protocol;
 import server.Server;
 
@@ -11,39 +18,71 @@ public class PutRequestHandler implements RequestHandler {
 
 	@Override
 	public HttpResponse handle(HttpRequest request, Server server) {
-		HttpResponse response = null;
+		HttpResponse response;
+
 		// Handling POST request here
 		// Get relative URI path from request
 		String uri = request.getUri();
+		// Get body of request
+		String body = new String(request.getBody());
 		// Get root directory path from server
 		String rootDirectory = server.getRootDirectory();
 		// Combine them together to form absolute file path
 		File file = new File(rootDirectory + uri);
-
-		String body = new String(request.getBody());
-		
 		// Check if the file exists
 		if (file.exists()) {
 			if (file.isDirectory()) {
 				// Look for default index.html file in a directory
-				String location = rootDirectory + uri + System.getProperty("file.separator") + Protocol.DEFAULT_FILE;
+				String location = rootDirectory + uri
+						+ System.getProperty("file.separator")
+						+ Protocol.DEFAULT_FILE;
 				file = new File(location);
 				if (file.exists()) {
-					// TODO: overwrite file with body
-					// response = HttpResponseFactory.create200OK(file, Protocol.CLOSE);
+					// Let's overwrite it
+					response = overwriteFile(file, body);
 				} else {
-					// TODO: create file and write body
-					// response = HttpResponseFactory.create200OK(Protocol.CLOSE);
+					response = createFile(file, body);
 				}
+				// It's a file. Let's overwrite it.
 			} else {
-				// TODO: overwrite file with body
-				// response = HttpResponseFactory.create200OK(file, Protocol.CLOSE);
+				response = overwriteFile(file, body);
 			}
 		} else {
-			// TODO: create file and write body
-			// response = HttpResponseFactory.create200OK(Protocol.CLOSE);
+			// File does not exist so lets create it
+			response = createFile(file, body);
 		}
 		return response;
+	}
+
+	/**
+	 * @param file
+	 * @param body
+	 * @return
+	 */
+	private HttpResponse createFile(File file, String body) {
+		HttpResponse response;
+		PrintWriter out = null;
+		try {
+			out = new PrintWriter(file.getAbsolutePath());
+			out.println(body);
+			response = HttpResponseFactory.create200OK(file, Protocol.CLOSE);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+			response = HttpResponseFactory.create400BadRequest(Protocol.CLOSE);
+		} finally {
+			out.close();
+		}
+		return response;
+	}
+
+	/**
+	 * @param file
+	 * @param body
+	 * @return
+	 */
+	private HttpResponse overwriteFile(File file, String body) {
+		file.delete();
+		return this.createFile(file, body);
 	}
 
 }

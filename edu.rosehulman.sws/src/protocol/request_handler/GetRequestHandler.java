@@ -11,7 +11,7 @@ import server.Server;
 public class GetRequestHandler implements RequestHandler {
 
 	public HttpResponse handle(HttpRequest request, Server server) {
-		HttpResponse response = null;
+		HttpResponse response;
 //				Map<String, String> header = request.getHeader();
 //				String date = header.get("if-modified-since");
 //				String hostName = header.get("host");
