@@ -48,7 +48,7 @@ public class PostRequestHandler implements RequestHandler {
 				response = appendToFile(file, body);
 			}
 		} else {
-			// File does not exist so lets create 404 file not found code
+			// File does not exist so lets create it
 			response = createFile(file, body);
 		}
 		return response;
