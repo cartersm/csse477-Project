@@ -146,7 +146,7 @@ public class ConnectionHandler implements Runnable {
 			} else {
 				IRequestHandler requestHandler = this.requestHandlers.get(request.getMethod().toLowerCase());
 				if (requestHandler != null) {
-					requestHandler.handle(request, server);
+					response = requestHandler.handle(request, server);
 				} else {
 					response = HttpResponseFactory.create400BadRequest(Protocol.CLOSE);
 				}
