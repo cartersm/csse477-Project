@@ -1,4 +1,4 @@
-package protocol;
+
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -8,8 +8,15 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 
+import protocol.HttpRequest;
+import protocol.HttpResponse;
+import protocol.HttpResponseFactory;
+import protocol.IServlet;
+import protocol.Protocol;
+
 /**
- * A basic servlet implementation to do standard HTTP operations with no additional logic.
+ * A basic servlet implementation to do standard HTTP operations with no
+ * additional logic.
  * 
  */
 public class BasicServlet implements IServlet {
@@ -25,12 +32,13 @@ public class BasicServlet implements IServlet {
 		// Get relative URI path from request
 		String uri = request.getUri();
 		// Combine them together to form absolute file path
-		File file = new File(rootDirectory + uri);
+		String path = getPathFromUri(uri);
+		File file = new File(rootDirectory + path);
 		// Check if the file exists
 		if (file.exists()) {
 			if (file.isDirectory()) {
 				// Look for default index.html file in a directory
-				String location = rootDirectory + uri + System.getProperty("file.separator") + Protocol.DEFAULT_FILE;
+				String location = rootDirectory + Protocol.SYSTEM_SEPARATOR + Protocol.DEFAULT_FILE;
 				file = new File(location);
 				if (file.exists()) {
 					// Lets create 200 OK response
@@ -58,15 +66,16 @@ public class BasicServlet implements IServlet {
 		// Handling PUT request here
 		// Get relative URI path from request
 		String uri = request.getUri();
+		String path = getPathFromUri(uri);
 		// Get body of request
 		String body = new String(request.getBody());
 		// Combine them together to form absolute file path
-		File file = new File(rootDirectory + uri);
+		File file = new File(rootDirectory + path);
 		// Check if the file exists
 		if (file.exists()) {
 			if (file.isDirectory()) {
 				// Look for default index.html file in a directory
-				String location = rootDirectory + uri + System.getProperty("file.separator") + Protocol.DEFAULT_FILE;
+				String location = rootDirectory + Protocol.SYSTEM_SEPARATOR + Protocol.DEFAULT_FILE;
 				file = new File(location);
 				if (file.exists()) {
 					// Let's overwrite it
@@ -83,6 +92,88 @@ public class BasicServlet implements IServlet {
 			response = createFile(file, body);
 		}
 		return response;
+	}
+
+	@Override
+	public HttpResponse doPost(HttpRequest request, String rootDirectory) {
+		HttpResponse response;
+
+		// Handling POST request here
+		// Get relative URI path from request
+		String uri = request.getUri();
+		String path = getPathFromUri(uri);
+		// Get body of request
+		String body = new String(request.getBody());
+		// Combine them together to form absolute file path
+		File file = new File(rootDirectory + path);
+		// Check if the file exists
+		if (file.exists()) {
+			if (file.isDirectory()) {
+				// Look for default index.html file in a directory
+				String location = rootDirectory + Protocol.SYSTEM_SEPARATOR + Protocol.DEFAULT_FILE;
+				file = new File(location);
+				if (file.exists()) {
+					// Lets create 200 OK response
+					response = appendToFile(file, body);
+				} else {
+					response = createFile(file, body);
+				}
+				// It's a file. Let's append to it.
+			} else {
+				response = appendToFile(file, body);
+			}
+		} else {
+			// File does not exist so lets create it
+			response = createFile(file, body);
+		}
+		return response;
+	}
+
+	@Override
+	public HttpResponse doDelete(HttpRequest request, String rootDirectory) {
+		HttpResponse response = null;
+		// Handling POST request here
+		// Get relative URI path from request
+		String uri = request.getUri();
+		String path = getPathFromUri(uri);
+		final String deleted = rootDirectory + Protocol.SYSTEM_SEPARATOR + "deleted.txt";
+
+		// Combine them together to form absolute file path
+		File file = new File(rootDirectory + path);
+
+		// Check if the file exists
+		if (file.exists()) {
+			if (file.isDirectory()) {
+				// Look for default index.html file in a directory
+				String location = rootDirectory + path + System.getProperty("file.separator") + Protocol.DEFAULT_FILE;
+				file = new File(location);
+				if (file.exists()) {
+					if (!file.getName().equalsIgnoreCase("deleted.txt") && file.delete()) {
+						response = HttpResponseFactory.create200OK(new File(deleted), Protocol.CLOSE);
+					} else {
+						response = HttpResponseFactory.create400BadRequest(Protocol.CLOSE);
+					}
+				} else {
+					response = HttpResponseFactory.create404NotFound(Protocol.CLOSE);
+				}
+			} else {
+				if (!file.getName().equalsIgnoreCase("deleted.txt") && file.delete()) {
+					response = HttpResponseFactory.create200OK(new File(deleted), Protocol.CLOSE);
+				} else {
+					response = HttpResponseFactory.create400BadRequest(Protocol.CLOSE);
+				}
+			}
+		} else {
+			response = HttpResponseFactory.create404NotFound(Protocol.CLOSE);
+		}
+		return response;
+	}
+
+	/* ----- Helper methods ----- */
+	private String getPathFromUri(String uri) {
+		final int servlet = uri.indexOf(this.getClass().getSimpleName());
+		final int start = uri.indexOf("/", servlet);
+		return uri.substring(start);
 	}
 
 	private HttpResponse createFile(File file, String body) {
@@ -106,40 +197,6 @@ public class BasicServlet implements IServlet {
 		return this.createFile(file, body);
 	}
 
-	@Override
-	public HttpResponse doPost(HttpRequest request, String rootDirectory) {
-		HttpResponse response;
-
-		// Handling POST request here
-		// Get relative URI path from request
-		String uri = request.getUri();
-		// Get body of request
-		String body = new String(request.getBody());
-		// Combine them together to form absolute file path
-		File file = new File(rootDirectory + uri);
-		// Check if the file exists
-		if (file.exists()) {
-			if (file.isDirectory()) {
-				// Look for default index.html file in a directory
-				String location = rootDirectory + uri + System.getProperty("file.separator") + Protocol.DEFAULT_FILE;
-				file = new File(location);
-				if (file.exists()) {
-					// Lets create 200 OK response
-					response = appendToFile(file, body);
-				} else {
-					response = createFile(file, body);
-				}
-				// It's a file. Let's append to it.
-			} else {
-				response = appendToFile(file, body);
-			}
-		} else {
-			// File does not exist so lets create it
-			response = createFile(file, body);
-		}
-		return response;
-	}
-
 	private HttpResponse appendToFile(File file, String body) {
 		HttpResponse response;
 		try {
@@ -148,46 +205,6 @@ public class BasicServlet implements IServlet {
 		} catch (IOException e) {
 			e.printStackTrace();
 			response = HttpResponseFactory.create400BadRequest(Protocol.CLOSE);
-		}
-		return response;
-	}
-
-	@Override
-	public HttpResponse doDelete(HttpRequest request, String rootDirectory) {
-		HttpResponse response = null;
-		// Handling POST request here
-		// Get relative URI path from request
-		String uri = request.getUri();
-		final String deleted = rootDirectory + System.getProperty("file.separator") + "deleted.txt";
-
-		// Combine them together to form absolute file path
-		File file = new File(rootDirectory + uri);
-		System.out.println(file.getAbsolutePath());
-
-		// Check if the file exists
-		if (file.exists()) {
-			if (file.isDirectory()) {
-				// Look for default index.html file in a directory
-				String location = rootDirectory + uri + System.getProperty("file.separator") + Protocol.DEFAULT_FILE;
-				file = new File(location);
-				if (file.exists()) {
-					if (!file.getName().equalsIgnoreCase("deleted.txt") && file.delete()) {
-						response = HttpResponseFactory.create200OK(new File(deleted), Protocol.CLOSE);
-					} else {
-						response = HttpResponseFactory.create400BadRequest(Protocol.CLOSE);
-					}
-				} else {
-					response = HttpResponseFactory.create404NotFound(Protocol.CLOSE);
-				}
-			} else {
-				if (!file.getName().equalsIgnoreCase("deleted.txt") && file.delete()) {
-					response = HttpResponseFactory.create200OK(new File(deleted), Protocol.CLOSE);
-				} else {
-					response = HttpResponseFactory.create400BadRequest(Protocol.CLOSE);
-				}
-			}
-		} else {
-			response = HttpResponseFactory.create404NotFound(Protocol.CLOSE);
 		}
 		return response;
 	}

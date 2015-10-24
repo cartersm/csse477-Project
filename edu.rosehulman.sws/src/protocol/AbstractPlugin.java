@@ -51,7 +51,7 @@ public abstract class AbstractPlugin {
 		// the character after the "/" after the plugin name
 		int start = uri.indexOf(className) + className.length() + 1;
 		// the next "/"
-		int end = uri.indexOf("/", start) + 1;
+		int end = uri.indexOf("/", start);
 
 		String servletUri = uri.substring(start, end);
 		return getServlet(servletUri);

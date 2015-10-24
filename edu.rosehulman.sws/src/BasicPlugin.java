@@ -1,8 +1,15 @@
-package protocol;
+
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.NoSuchElementException;
+
+import protocol.AbstractPlugin;
+import protocol.HttpRequest;
+import protocol.HttpResponse;
+import protocol.HttpResponseFactory;
+import protocol.IServlet;
+import protocol.Protocol;
 
 /**
  * A basic Plugin implementation that demonstrates the usages and
@@ -24,7 +31,7 @@ public class BasicPlugin extends AbstractPlugin {
 		} catch (NoSuchElementException e) {
 			return HttpResponseFactory.create400BadRequest(Protocol.CLOSE);
 		}
-
+		
 		switch (request.getMethod()) {
 		case Protocol.GET:
 			return servlet.doGet(request, getRootDirectory());

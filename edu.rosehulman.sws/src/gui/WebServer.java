@@ -27,6 +27,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.IOException;
 
 import javax.swing.*;
 
@@ -67,7 +68,7 @@ public class WebServer extends JFrame {
 		public void run() {
 			while(!stop) {
 				// Poll if server is not null and server is still accepting connections
-				if(server != null && !server.isStoped()) {
+				if(server != null && !server.isStopped()) {
 					double rate = server.getServiceRate();
 					if(rate == Double.MIN_VALUE)
 						WebServer.this.txtServiceRate.setText("Unknown");
@@ -166,7 +167,7 @@ public class WebServer extends JFrame {
 		// Add action for run server
 		this.butStartServer.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if(server != null && !server.isStoped()) {
+				if(server != null && !server.isStopped()) {
 					JOptionPane.showMessageDialog(WebServer.this, "The web server is still running, try again later.", "Server Still Running Error", JOptionPane.ERROR_MESSAGE);
 					return;
 				}
@@ -185,7 +186,12 @@ public class WebServer extends JFrame {
 				String rootDirectory = WebServer.this.txtRootDirectory.getText();
 				
 				// Now run the server in non-gui thread
-				server = new Server(rootDirectory, port, WebServer.this);
+				try {
+					server = new Server(rootDirectory, port, WebServer.this);
+				} catch (IOException e1) {
+					e1.printStackTrace();
+					System.exit(1); // kill it if we get an error on the server
+				}
 				rateUpdater = new ServiceRateUpdater();
 				
 				// Disable widgets
@@ -202,7 +208,7 @@ public class WebServer extends JFrame {
 		// Add action for stop button
 		this.butStopServer.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if(server != null && !server.isStoped())
+				if(server != null && !server.isStopped())
 					server.stop();
 				if(rateUpdater != null)
 					rateUpdater.stop = true;
@@ -213,7 +219,7 @@ public class WebServer extends JFrame {
 		// Make sure the web server is stopped before closing the window
 		this.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
-				if(server != null && !server.isStoped())
+				if(server != null && !server.isStopped())
 					server.stop();
 				if(rateUpdater != null)
 					rateUpdater.stop = true;

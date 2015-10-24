@@ -21,21 +21,16 @@
 
 package server;
 
-import java.io.File;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
-import java.util.HashMap;
-import java.util.Map;
 
 import protocol.AbstractPlugin;
-import protocol.BasicPlugin;
 import protocol.HttpRequest;
 import protocol.HttpResponse;
 import protocol.HttpResponseFactory;
 import protocol.Protocol;
 import protocol.ProtocolException;
-import protocol.request_handler.IRequestHandler;
 
 /**
  * This class is responsible for handling a incoming request by creating a
@@ -48,21 +43,10 @@ import protocol.request_handler.IRequestHandler;
 public class ConnectionHandler implements Runnable {
 	private Server server;
 	private Socket socket;
-	private Map<String, AbstractPlugin> plugins;
-
 	public ConnectionHandler(Server server, Socket socket) {
 		this.server = server;
 		this.socket = socket;
-		this.plugins = new HashMap<>();
-		
-		// TODO: extract method?
-		final String pluginName = BasicPlugin.class.getSimpleName();
-		final String rootDirectory = this.server.getRootDirectory() + Protocol.SYSTEM_SEPARATOR + pluginName;
-		File root = new File(rootDirectory);
-		if (!root.exists()) {
-			root.mkdir();
-		}
-		this.plugins.put(pluginName, new BasicPlugin(rootDirectory));
+
 	}
 
 	/**
@@ -188,7 +172,7 @@ public class ConnectionHandler implements Runnable {
 
 	private AbstractPlugin getPluginfromUri(String uri) {
 		final String pluginString = uri.substring(1, uri.indexOf("/", 1));
-		return this.plugins.get(pluginString);
+		return this.server.getPlugin(pluginString);
 	}
 
 }
