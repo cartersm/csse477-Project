@@ -35,6 +35,7 @@ public class Protocol {
     public static final char CR = '\r';
     public static final char LF = '\n';
     public static final String CRLF = "" + CR + LF;
+    public static final String SYSTEM_SEPARATOR = System.getProperty("file.separator");
 
     // Some useful protocol elements
     public static final String VERSION = "HTTP/1.1";

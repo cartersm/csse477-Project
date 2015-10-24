@@ -20,7 +20,7 @@ public class PutRequestHandler implements IRequestHandler {
 	public HttpResponse handle(HttpRequest request, Server server) {
 		HttpResponse response;
 
-		// Handling POST request here
+		// Handling PUT request here
 		// Get relative URI path from request
 		String uri = request.getUri();
 		// Get body of request

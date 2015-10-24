@@ -21,18 +21,21 @@
 
 package server;
 
+import java.io.File;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 import java.util.HashMap;
 import java.util.Map;
 
+import protocol.AbstractPlugin;
+import protocol.BasicPlugin;
 import protocol.HttpRequest;
 import protocol.HttpResponse;
 import protocol.HttpResponseFactory;
 import protocol.Protocol;
 import protocol.ProtocolException;
-import protocol.request_handler.*;
+import protocol.request_handler.IRequestHandler;
 
 /**
  * This class is responsible for handling a incoming request by creating a
@@ -45,16 +48,21 @@ import protocol.request_handler.*;
 public class ConnectionHandler implements Runnable {
 	private Server server;
 	private Socket socket;
-	private Map<String, IRequestHandler> requestHandlers;
+	private Map<String, AbstractPlugin> plugins;
 
 	public ConnectionHandler(Server server, Socket socket) {
 		this.server = server;
 		this.socket = socket;
-		this.requestHandlers = new HashMap<>();
-		this.requestHandlers.put(Protocol.GET.toLowerCase(), new GetRequestHandler());
-		this.requestHandlers.put(Protocol.POST.toLowerCase(), new PostRequestHandler());
-		this.requestHandlers.put(Protocol.PUT.toLowerCase(), new PutRequestHandler());
-		this.requestHandlers.put(Protocol.DELETE.toLowerCase(), new DeleteRequestHandler());
+		this.plugins = new HashMap<>();
+		
+		// TODO: extract method?
+		final String pluginName = BasicPlugin.class.getSimpleName();
+		final String rootDirectory = this.server.getRootDirectory() + Protocol.SYSTEM_SEPARATOR + pluginName;
+		File root = new File(rootDirectory);
+		if (!root.exists()) {
+			root.mkdir();
+		}
+		this.plugins.put(pluginName, new BasicPlugin(rootDirectory));
 	}
 
 	/**
@@ -142,11 +150,10 @@ public class ConnectionHandler implements Runnable {
 			if (!request.getVersion().equalsIgnoreCase(Protocol.VERSION)) {
 				// Here you checked that the "Protocol.VERSION" string is not equal to the
 				// "request.version" string ignoring the case of the letters in both strings
-				// TODO: Fill in the rest of the code here
 			} else {
-				IRequestHandler requestHandler = this.requestHandlers.get(request.getMethod().toLowerCase());
-				if (requestHandler != null) {
-					response = requestHandler.handle(request, server);
+				AbstractPlugin plugin = getPluginfromUri(request.getUri());
+				if (plugin != null) {
+					response = plugin.handle(request);
 				} else {
 					response = HttpResponseFactory.create400BadRequest(Protocol.CLOSE);
 				}
@@ -177,6 +184,11 @@ public class ConnectionHandler implements Runnable {
 		// Get the end time
 		long end = System.currentTimeMillis();
 		this.server.incrementServiceTime(end - start);
+	}
+
+	private AbstractPlugin getPluginfromUri(String uri) {
+		final String pluginString = uri.substring(1, uri.indexOf("/", 1));
+		return this.plugins.get(pluginString);
 	}
 
 }

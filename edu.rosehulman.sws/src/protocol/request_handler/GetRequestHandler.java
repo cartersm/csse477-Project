@@ -12,10 +12,6 @@ public class GetRequestHandler implements IRequestHandler {
 
 	public HttpResponse handle(HttpRequest request, Server server) {
 		HttpResponse response;
-//				Map<String, String> header = request.getHeader();
-//				String date = header.get("if-modified-since");
-//				String hostName = header.get("host");
-//				
 		// Handling GET request here
 		// Get relative URI path from request
 		String uri = request.getUri();
