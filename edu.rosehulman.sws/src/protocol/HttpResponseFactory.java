@@ -145,4 +145,14 @@ public class HttpResponseFactory {
 		// TODO fill in this method
 		return null;
 	}
+	
+	public static HttpResponse create501NotImplemented(String connection) {
+		HttpResponse response = new HttpResponse(Protocol.VERSION, Protocol.NOT_IMPLEMENTED_CODE, 
+				Protocol.NOT_IMPLEMENTED_TEXT, new HashMap<String, String>(), null);
+		
+		// Lets fill up the header fields with more information
+		fillGeneralHeader(response, connection);
+		
+		return response;	
+	}	
 }
