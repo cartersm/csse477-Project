@@ -16,7 +16,7 @@ import protocol.Protocol;
  * implementations of the methods defined in {@link AbstractPlugin}
  * 
  */
-public class BasicPlugin extends AbstractPlugin {
+public final class BasicPlugin extends AbstractPlugin {
 
 	public BasicPlugin(String rootDirectory) {
 		super(rootDirectory);

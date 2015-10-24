@@ -19,7 +19,7 @@ import protocol.Protocol;
  * additional logic.
  * 
  */
-public class BasicServlet implements IServlet {
+public final class BasicServlet implements IServlet {
 
 	@Override
 	public HttpResponse doGet(HttpRequest request, String rootDirectory) {
