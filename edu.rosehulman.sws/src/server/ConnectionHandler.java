@@ -171,6 +171,7 @@ public class ConnectionHandler implements Runnable {
 	}
 
 	private AbstractPlugin getPluginfromUri(String uri) {
+		System.out.println("Hello Error: " + uri);
 		final String pluginString = uri.substring(1, uri.indexOf("/", 1));
 		return this.server.getPlugin(pluginString);
 	}

@@ -19,7 +19,7 @@ import protocol.Protocol;
  * additional logic.
  * 
  */
-public final class BasicServlet implements IServlet {
+public class BasicServlet implements IServlet {
 
 	@Override
 	public HttpResponse doGet(HttpRequest request, String rootDirectory) {
@@ -170,13 +170,13 @@ public final class BasicServlet implements IServlet {
 	}
 
 	/* ----- Helper methods ----- */
-	private String getPathFromUri(String uri) {
+	protected String getPathFromUri(String uri) {
 		final int servlet = uri.indexOf(this.getClass().getSimpleName());
 		final int start = uri.indexOf("/", servlet);
 		return uri.substring(start);
 	}
 
-	private HttpResponse createFile(File file, String body) {
+	public HttpResponse createFile(File file, String body) {
 		HttpResponse response;
 		PrintWriter out = null;
 		try {
@@ -192,12 +192,12 @@ public final class BasicServlet implements IServlet {
 		return response;
 	}
 
-	private HttpResponse overwriteFile(File file, String body) {
+	public HttpResponse overwriteFile(File file, String body) {
 		file.delete();
 		return this.createFile(file, body);
 	}
 
-	private HttpResponse appendToFile(File file, String body) {
+	public HttpResponse appendToFile(File file, String body) {
 		HttpResponse response;
 		try {
 			Files.write(Paths.get(file.getAbsolutePath()), body.getBytes(), StandardOpenOption.APPEND);
