@@ -4,6 +4,7 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 
 public abstract class AbstractPlugin {
+	// TODO? BasicServlet implementation as an instance var? Else new instance every time.
 	protected Map<String, IServlet> servlets;
 	private String rootDirectory;
 

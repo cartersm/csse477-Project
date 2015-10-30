@@ -24,12 +24,15 @@ public class BasicPlugin extends AbstractPlugin {
 
 	@Override
 	public HttpResponse handle(HttpRequest request) {
+		// TODO: if no servlet, ensure that there's a filepath, and do basic static resource operations
+		// Else, make sure there's no path after the servlet, and parse form fields if they exist
 		final String uri = request.getUri();
 		final IServlet servlet;
 		try {
 			servlet = getServletFromUri(uri);
 		} catch (NoSuchElementException e) {
 			return HttpResponseFactory.create400BadRequest(Protocol.CLOSE);
+			// TODO: check whether it's a file (or just route traffic to BasicServlet?
 		}
 		
 		switch (request.getMethod()) {

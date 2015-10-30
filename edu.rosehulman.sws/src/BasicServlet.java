@@ -19,6 +19,9 @@ import protocol.Protocol;
  * additional logic.
  * 
  */
+// TODO: with all servlets: we should only have <root>/Plugin/Servlet, NOT <root>/Plugin/Servlet/Path.
+// The latter should be <root>/Plugin/Path. e.g., standard operations act on the plugin itself.
+// The Servlet always acts a specific way on a specific resource/resources (with "?var=val&var2=val2", etc. in the URL)
 public class BasicServlet implements IServlet {
 
 	@Override
