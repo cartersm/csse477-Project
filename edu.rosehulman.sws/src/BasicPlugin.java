@@ -2,7 +2,6 @@
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.NoSuchElementException;
 
 import protocol.AbstractPlugin;
 import protocol.HttpRequest;
@@ -23,16 +22,19 @@ public class BasicPlugin extends AbstractPlugin {
 	}
 
 	@Override
+	// TODO: pull up and make final? really the servlet will have the logic here.
 	public HttpResponse handle(HttpRequest request) {
 		// TODO: if no servlet, ensure that there's a filepath, and do basic static resource operations
 		// Else, make sure there's no path after the servlet, and parse form fields if they exist
 		final String uri = request.getUri();
-		final IServlet servlet;
+		IServlet servlet;
 		try {
 			servlet = getServletFromUri(uri);
-		} catch (NoSuchElementException e) {
-			return HttpResponseFactory.create400BadRequest(Protocol.CLOSE);
-			// TODO: check whether it's a file (or just route traffic to BasicServlet?
+		} catch (ServletUndefinedException e) {
+//			return HttpResponseFactory.create400BadRequest(Protocol.CLOSE);
+			// TODO: logging of some sort?
+			// TODO: check whether it's a file (or just route traffic to BasicServlet?)
+			servlet = new BasicServlet(); // Handles basic static file operations
 		}
 		
 		switch (request.getMethod()) {

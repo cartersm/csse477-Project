@@ -32,31 +32,24 @@ public class BasicServlet implements IServlet {
 		// String hostName = header.get("host");
 		//
 		// Handling GET request here
-		// Get relative URI path from request
 		String uri = request.getUri();
-		// Combine them together to form absolute file path
 		String path = getPathFromUri(uri);
+		
 		File file = new File(rootDirectory + path);
-		// Check if the file exists
+
 		if (file.exists()) {
 			if (file.isDirectory()) {
-				// Look for default index.html file in a directory
 				String location = rootDirectory + Protocol.SYSTEM_SEPARATOR + Protocol.DEFAULT_FILE;
 				file = new File(location);
 				if (file.exists()) {
-					// Lets create 200 OK response
 					response = HttpResponseFactory.create200OK(file, Protocol.CLOSE);
 				} else {
-					// File does not exist so lets create 404 file not found
-					// code
 					response = HttpResponseFactory.create404NotFound(Protocol.CLOSE);
 				}
-			} else { // Its a file
-						// Lets create 200 OK response
+			} else { 
 				response = HttpResponseFactory.create200OK(file, Protocol.CLOSE);
 			}
 		} else {
-			// File does not exist so lets create 404 file not found code
 			response = HttpResponseFactory.create404NotFound(Protocol.CLOSE);
 		}
 		return response;
@@ -67,31 +60,25 @@ public class BasicServlet implements IServlet {
 		HttpResponse response;
 
 		// Handling PUT request here
-		// Get relative URI path from request
 		String uri = request.getUri();
 		String path = getPathFromUri(uri);
-		// Get body of request
 		String body = new String(request.getBody());
-		// Combine them together to form absolute file path
+
 		File file = new File(rootDirectory + path);
-		// Check if the file exists
+
 		if (file.exists()) {
 			if (file.isDirectory()) {
-				// Look for default index.html file in a directory
 				String location = rootDirectory + Protocol.SYSTEM_SEPARATOR + Protocol.DEFAULT_FILE;
 				file = new File(location);
 				if (file.exists()) {
-					// Let's overwrite it
 					response = overwriteFile(file, body);
 				} else {
 					response = createFile(file, body);
 				}
-				// It's a file. Let's overwrite it.
 			} else {
 				response = overwriteFile(file, body);
 			}
 		} else {
-			// File does not exist so lets create it
 			response = createFile(file, body);
 		}
 		return response;
@@ -102,31 +89,25 @@ public class BasicServlet implements IServlet {
 		HttpResponse response;
 
 		// Handling POST request here
-		// Get relative URI path from request
 		String uri = request.getUri();
 		String path = getPathFromUri(uri);
-		// Get body of request
 		String body = new String(request.getBody());
-		// Combine them together to form absolute file path
+		
 		File file = new File(rootDirectory + path);
-		// Check if the file exists
+		
 		if (file.exists()) {
 			if (file.isDirectory()) {
-				// Look for default index.html file in a directory
 				String location = rootDirectory + Protocol.SYSTEM_SEPARATOR + Protocol.DEFAULT_FILE;
 				file = new File(location);
 				if (file.exists()) {
-					// Lets create 200 OK response
 					response = appendToFile(file, body);
 				} else {
 					response = createFile(file, body);
 				}
-				// It's a file. Let's append to it.
 			} else {
 				response = appendToFile(file, body);
 			}
 		} else {
-			// File does not exist so lets create it
 			response = createFile(file, body);
 		}
 		return response;
@@ -134,21 +115,17 @@ public class BasicServlet implements IServlet {
 
 	@Override
 	public HttpResponse doDelete(HttpRequest request, String rootDirectory) {
-		HttpResponse response = null;
+		HttpResponse response;
 		// Handling POST request here
-		// Get relative URI path from request
 		String uri = request.getUri();
 		String path = getPathFromUri(uri);
 		final String deleted = rootDirectory + Protocol.SYSTEM_SEPARATOR + "deleted.txt";
 
-		// Combine them together to form absolute file path
 		File file = new File(rootDirectory + path);
 
-		// Check if the file exists
 		if (file.exists()) {
 			if (file.isDirectory()) {
-				// Look for default index.html file in a directory
-				String location = rootDirectory + path + System.getProperty("file.separator") + Protocol.DEFAULT_FILE;
+				String location = rootDirectory + path + Protocol.SYSTEM_SEPARATOR + Protocol.DEFAULT_FILE;
 				file = new File(location);
 				if (file.exists()) {
 					if (!file.getName().equalsIgnoreCase("deleted.txt") && file.delete()) {
@@ -174,8 +151,12 @@ public class BasicServlet implements IServlet {
 
 	/* ----- Helper methods ----- */
 	protected String getPathFromUri(String uri) {
-		final int servlet = uri.indexOf(this.getClass().getSimpleName());
-		final int start = uri.indexOf("/", servlet);
+		if (uri.contains(this.getClass().getSimpleName())) {
+			// If the URI is /Plugin/Servlet, return the path to index.html
+			return Protocol.SYSTEM_SEPARATOR + Protocol.DEFAULT_FILE;
+		}
+		// Find the beginning of the path
+		final int start = uri.indexOf("/", 1);
 		return uri.substring(start);
 	}
 

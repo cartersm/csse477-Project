@@ -24,11 +24,13 @@ package server;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
+import java.util.Map;
 
 import protocol.AbstractPlugin;
 import protocol.HttpRequest;
 import protocol.HttpResponse;
 import protocol.HttpResponseFactory;
+import protocol.IServlet;
 import protocol.Protocol;
 import protocol.ProtocolException;
 
@@ -171,9 +173,37 @@ public class ConnectionHandler implements Runnable {
 	}
 
 	private AbstractPlugin getPluginfromUri(String uri) {
-		System.out.println("Hello Error: " + uri);
-		final String pluginString = uri.substring(1, uri.indexOf("/", 1));
-		return this.server.getPlugin(pluginString);
+		if (!uri.contains("/favicon.ico")) { // FIXME: ignoring favicon request
+			final String pluginString = uri.substring(1, uri.indexOf("/", 1));
+			return this.server.getPlugin(pluginString);
+		}
+		return new Error404Plugin();
+	}
+	
+	/**
+	 * Basic class to return a 404 for favicon issues
+	 * FIXME: put in a favicon?
+	 */
+	private final class Error404Plugin extends AbstractPlugin {
+		
+		public Error404Plugin() {
+			this(null);
+		}
+
+		public Error404Plugin(String rootDirectory) {
+			super(rootDirectory);
+		}
+
+		@Override
+		public HttpResponse handle(HttpRequest request) {
+			return HttpResponseFactory.create404NotFound(Protocol.CLOSE);
+		}
+
+		@Override
+		public Map<String, IServlet> createServlets() {
+			return null;
+		}
+		
 	}
 
 }
