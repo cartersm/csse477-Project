@@ -21,30 +21,17 @@
 
 package server;
 
-import gui.WebServer;
-
-import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.URI;
-import java.nio.file.DirectoryIteratorException;
-import java.nio.file.DirectoryStream;
-import java.nio.file.FileSystems;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardWatchEventKinds;
-import java.nio.file.WatchEvent;
-import java.nio.file.WatchKey;
-import java.nio.file.WatchService;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import protocol.Protocol;
+import gui.WebServer;
 import protocol.plugin.AbstractPlugin;
 
 /**
@@ -54,7 +41,6 @@ import protocol.plugin.AbstractPlugin;
  * @author Chandan R. Rupakheti (rupakhet@rose-hulman.edu)
  */
 public class Server implements Runnable {
-	private static final String PLUGIN_ROOT = new File("plugins").getAbsolutePath();
 	private String rootDirectory;
 	private int port;
 	private boolean stop;
@@ -74,8 +60,6 @@ public class Server implements Runnable {
 
 	private WebServer window;
 	private Map<String, AbstractPlugin> plugins;
-	private final WatchService watcher;
-	private Thread thread;
 
 	/**
 	 * @param rootDirectory
@@ -90,40 +74,6 @@ public class Server implements Runnable {
 		this.serviceTime = 0;
 		this.window = window;
 		this.plugins = new HashMap<>();
-		
-		this.activeConnections = new HashMap<String, List<Socket>>();
-		this.queuedConnections = new HashMap<String, List<Socket>>();
-		this.bannedInetAddresses = new ArrayList<String>();
-		
-		// Watch for directory changes
-		watcher = FileSystems.getDefault().newWatchService();
-		Path path = Paths.get(URI.create("file:///" + PLUGIN_ROOT.replace("\\", "//").replace(" ", "%20")));
-		path.register(watcher, 
-				StandardWatchEventKinds.ENTRY_CREATE, 
-				StandardWatchEventKinds.ENTRY_DELETE,
-				StandardWatchEventKinds.ENTRY_MODIFY);
-
-		try (DirectoryStream<Path> stream = Files.newDirectoryStream(path)) {
-			for (Path file : stream) {
-				addPlugin(file.toFile().getName());
-			}
-		} catch (IOException | DirectoryIteratorException x) {
-			System.err.println(x);
-		}
-
-		// Listen asynchronously for directory changes
-		this.thread = new Thread(new Runnable() {
-			@Override
-			public void run() {
-				try {
-					listenForNewPlugins();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-
-		}, "DirectoryWatcher");
-		this.thread.start();
 	}
 
 	/**
@@ -312,7 +262,6 @@ public class Server implements Runnable {
 
 			// We do not have any other job for this socket so just close it
 			socket.close();
-			this.thread.join();
 		} catch (Exception e) {
 		}
 	}
@@ -333,99 +282,25 @@ public class Server implements Runnable {
 		return this.plugins.get(key);
 	}
 
-	private void listenForNewPlugins() throws IOException {
-		for (;;) {
-			WatchKey key;
-			try {
-				key = watcher.take();
-			} catch (InterruptedException x) {
-				return;
-			}
-
-			for (WatchEvent<?> event : key.pollEvents()) {
-				WatchEvent.Kind<?> kind = event.kind();
-
-				if (kind == StandardWatchEventKinds.OVERFLOW) {
-					continue;
-				}
-
-				@SuppressWarnings("unchecked")
-				WatchEvent<Path> ev = (WatchEvent<Path>) event;
-				String filename = ev.context().toFile().getName();
-
-				// Ignore if it's not a JAR
-				if (!filename.endsWith(".jar")) {
-					continue;
-				}
-
-				if (kind == StandardWatchEventKinds.ENTRY_CREATE || kind == StandardWatchEventKinds.ENTRY_MODIFY) {
-					addPlugin(filename);
-				} else if (kind == StandardWatchEventKinds.ENTRY_DELETE) {
-					removePlugin(filename);
-				}
-			}
-
-			if (!key.reset()) {
-				throw new IOException("Plugin file is no longer accessible");
-			}
-		}
+	/**
+	 * @return
+	 */
+	public Map<String, AbstractPlugin> getPlugins() {
+		return Collections.unmodifiableMap(this.plugins);
 	}
 
-	private void addPlugin(String filename) {
-		JarClassLoader jarLoader = new JarClassLoader(PLUGIN_ROOT + "/" + filename);
-		/* Load the class from the jar file and resolve it. */
-		Class<?> c;
-		try {
-			String className = filename.substring(0, filename.lastIndexOf('.'));
-			// FIXME: the plugin has to be in the toplevel of its jar file
-			c = (Class<?>) jarLoader.loadClass(className, true);
-		} catch (ClassNotFoundException e1) {
-			e1.printStackTrace();
-			return;
-		}
-
-		/*
-		 * Create an instance of the class.
-		 * 
-		 * Note that created object's constructor-taking-no-arguments will be
-		 * called as part of the object's creation.
-		 */
-		Object o = null;
-		try {
-			final String pluginRootDirectory = rootDirectory + Protocol.SYSTEM_SEPARATOR + c.getSimpleName();
-			o = c.getDeclaredConstructor(String.class).newInstance(pluginRootDirectory);
-		} catch (Exception e) {
-			e.printStackTrace();
-			return;
-		}
-		if (o instanceof AbstractPlugin) {
-			AbstractPlugin plugin = (AbstractPlugin) o;
-			for (AbstractPlugin loadedPlugin : this.plugins.values()) {
-				// if plugin's simple name exists in the map...
-				if (loadedPlugin.getClass().getSimpleName().equals(plugin.getClass().getSimpleName())) {
-					// and plugin's fully-qualified name equals that plugin's
-					// fully-qualified name
-					if (loadedPlugin.getClass().getName().equals(plugin.getClass().getName())) {
-						// ... then they are (assumed to be) the same, so
-						// overwrite the existing plugin.
-						System.out.println("Updating plugin " + plugin.getClass().getSimpleName());
-						this.plugins.put(plugin.getClass().getSimpleName(), plugin);
-						return;
-					} else {
-						// Else, they're different and we have a name clash, so
-						// ignore the new one.
-						return; // TODO: throw some sort of error here?
-					}
-				}
-			}
-			System.out.println("Adding new plugin " + plugin.getClass().getSimpleName());
-			this.plugins.put(plugin.getClass().getSimpleName(), plugin);
-		}
-		return;
+	/**
+	 * @param simpleName
+	 * @param plugin
+	 */
+	public void addPlugin(String simpleName, AbstractPlugin plugin) {
+		this.plugins.put(simpleName, plugin);
 	}
 
-	private void removePlugin(String filename) {
-		System.out.println("Removing plugin " + filename);
+	/**
+	 * @param filename
+	 */
+	public void removePlugin(String filename) {
 		this.plugins.remove(filename);
 	}
 }

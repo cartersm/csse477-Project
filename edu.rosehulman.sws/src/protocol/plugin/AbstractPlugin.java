@@ -56,8 +56,6 @@ public abstract class AbstractPlugin {
 			return HttpResponseFactory.create400BadRequest(Protocol.CLOSE);
 		}
 
-		System.out.println("Servlet == " + servlet);
-		
 		switch (request.getMethod()) {
 		case Protocol.GET:
 			return servlet.doGet(request, this.rootDirectory);
