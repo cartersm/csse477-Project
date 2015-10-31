@@ -9,4 +9,6 @@ public interface IServlet {
 
 	public HttpResponse doDelete(HttpRequest request, String rootDirectory);
 
+	String getFilePath();
+
 }

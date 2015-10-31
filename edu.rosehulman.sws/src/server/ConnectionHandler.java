@@ -24,15 +24,13 @@ package server;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
-import java.util.Map;
 
-import protocol.AbstractPlugin;
 import protocol.HttpRequest;
 import protocol.HttpResponse;
 import protocol.HttpResponseFactory;
-import protocol.IServlet;
 import protocol.Protocol;
 import protocol.ProtocolException;
+import protocol.plugin.AbstractPlugin;
 
 /**
  * This class is responsible for handling a incoming request by creating a
@@ -45,6 +43,7 @@ import protocol.ProtocolException;
 public class ConnectionHandler implements Runnable {
 	private Server server;
 	private Socket socket;
+
 	public ConnectionHandler(Server server, Socket socket) {
 		this.server = server;
 		this.socket = socket;
@@ -75,7 +74,8 @@ public class ConnectionHandler implements Runnable {
 			inStream = this.socket.getInputStream();
 			outStream = this.socket.getOutputStream();
 		} catch (Exception e) {
-			// Cannot do anything if we have exception reading input or output stream
+			// Cannot do anything if we have exception reading input or output
+			// stream
 			// May be have text to log this for further analysis?
 			e.printStackTrace();
 
@@ -95,8 +95,10 @@ public class ConnectionHandler implements Runnable {
 			request = HttpRequest.read(inStream);
 			System.out.println(request);
 		} catch (ProtocolException pe) {
-			// We have some sort of protocol exception. Get its status code and create response
-			// We know only two kind of exception is possible inside fromInputStream
+			// We have some sort of protocol exception. Get its status code and
+			// create response
+			// We know only two kind of exception is possible inside
+			// fromInputStream
 			// Protocol.BAD_REQUEST_CODE and Protocol.NOT_SUPPORTED_CODE
 			int status = pe.getStatus();
 			if (status == Protocol.BAD_REQUEST_CODE) {
@@ -110,7 +112,8 @@ public class ConnectionHandler implements Runnable {
 		}
 
 		if (response != null) {
-			// Means there was an error, now write the response object to the socket
+			// Means there was an error, now write the response object to the
+			// socket
 			try {
 				response.write(outStream);
 				// System.out.println(response);
@@ -134,8 +137,10 @@ public class ConnectionHandler implements Runnable {
 			// Protocol.NOT_SUPPORTED_CODE, and more.
 			// You can check if the version matches as follows
 			if (!request.getVersion().equalsIgnoreCase(Protocol.VERSION)) {
-				// Here you checked that the "Protocol.VERSION" string is not equal to the
-				// "request.version" string ignoring the case of the letters in both strings
+				// Here you checked that the "Protocol.VERSION" string is not
+				// equal to the
+				// "request.version" string ignoring the case of the letters in
+				// both strings
 			} else {
 				AbstractPlugin plugin = getPluginfromUri(request.getUri());
 				if (plugin != null) {
@@ -173,37 +178,8 @@ public class ConnectionHandler implements Runnable {
 	}
 
 	private AbstractPlugin getPluginfromUri(String uri) {
-		if (!uri.contains("/favicon.ico")) { // FIXME: ignoring favicon request
-			final String pluginString = uri.substring(1, uri.indexOf("/", 1));
-			return this.server.getPlugin(pluginString);
-		}
-		return new Error404Plugin();
+		// FIXME: 400 on favicon.ico request
+		final String pluginString = uri.substring(1, uri.indexOf("/", 1));
+		return this.server.getPlugin(pluginString);
 	}
-	
-	/**
-	 * Basic class to return a 404 for favicon issues
-	 * FIXME: put in a favicon?
-	 */
-	private final class Error404Plugin extends AbstractPlugin {
-		
-		public Error404Plugin() {
-			this(null);
-		}
-
-		public Error404Plugin(String rootDirectory) {
-			super(rootDirectory);
-		}
-
-		@Override
-		public HttpResponse handle(HttpRequest request) {
-			return HttpResponseFactory.create404NotFound(Protocol.CLOSE);
-		}
-
-		@Override
-		public Map<String, IServlet> createServlets() {
-			return null;
-		}
-		
-	}
-
 }

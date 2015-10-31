@@ -1,3 +1,4 @@
+package protocol.plugin;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -14,11 +15,12 @@ import protocol.IServlet;
 import protocol.Protocol;
 
 /**
- * A basic servlet implementation to perform standard HTTP operations on its
- * containing plugin's index.html.
+ * The default servlet implementation. This class should only be used by
+ * AbstractPlugin for standard HTTP operations performed on the URL
+ * "/Plugin/Path".
  * 
  */
-public class BasicServlet implements IServlet {
+final class DefaultServlet implements IServlet {
 
 	@Override
 	public HttpResponse doGet(HttpRequest request, String rootDirectory) {
@@ -28,11 +30,10 @@ public class BasicServlet implements IServlet {
 		// String hostName = header.get("host");
 		//
 		// Handling GET request here
-		String path = getFilePath();
+		String uri = request.getUri();
+		String path = getFilePathFromUri(uri);
 
 		File file = new File(rootDirectory + path);
-		
-		System.out.println(file);
 
 		if (file.exists()) {
 			if (file.isDirectory()) {
@@ -57,7 +58,8 @@ public class BasicServlet implements IServlet {
 		HttpResponse response;
 
 		// Handling PUT request here
-		String path = getFilePath();
+		String uri = request.getUri();
+		String path = getFilePathFromUri(uri);
 		String body = new String(request.getBody());
 
 		File file = new File(rootDirectory + path);
@@ -85,7 +87,8 @@ public class BasicServlet implements IServlet {
 		HttpResponse response;
 
 		// Handling POST request here
-		String path = getFilePath();
+		String uri = request.getUri();
+		String path = getFilePathFromUri(uri);
 		String body = new String(request.getBody());
 
 		File file = new File(rootDirectory + path);
@@ -112,7 +115,8 @@ public class BasicServlet implements IServlet {
 	public HttpResponse doDelete(HttpRequest request, String rootDirectory) {
 		HttpResponse response;
 		// Handling POST request here
-		String path = getFilePath();
+		String uri = request.getUri();
+		String path = getFilePathFromUri(uri);
 		final String deleted = rootDirectory + Protocol.SYSTEM_SEPARATOR + "deleted.txt";
 
 		File file = new File(rootDirectory + path);
@@ -143,13 +147,19 @@ public class BasicServlet implements IServlet {
 		return response;
 	}
 
-	/* ----- Helper methods ----- */
-	@Override
-	public String getFilePath() {
-		// If the URI is /Plugin/Servlet, return the path to index.html
-		return Protocol.SYSTEM_SEPARATOR + Protocol.DEFAULT_FILE;
+	public String getFilePathFromUri(String uri) {
+		// Find the beginning of the path
+		final int start = uri.indexOf("/", 1);
+		return uri.substring(start);
 	}
 
+	@Override
+	public String getFilePath() {
+		// ignored for this implementation
+		return null;
+	}
+
+	/* ----- Helper methods ----- */
 	public HttpResponse createFile(File file, String body) {
 		HttpResponse response;
 		PrintWriter out = null;
@@ -182,5 +192,4 @@ public class BasicServlet implements IServlet {
 		}
 		return response;
 	}
-
 }

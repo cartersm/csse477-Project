@@ -41,8 +41,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import gui.WebServer;
-import protocol.AbstractPlugin;
 import protocol.Protocol;
+import protocol.plugin.AbstractPlugin;
 
 /**
  * This represents a welcoming server for the incoming
