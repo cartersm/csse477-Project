@@ -26,6 +26,8 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.OutputStream;
+import java.security.DigestInputStream;
+import java.security.MessageDigest;
 import java.util.Collections;
 import java.util.Map;
 
@@ -140,11 +142,14 @@ public class HttpResponse {
 		// Write a blank line
 		out.write(Protocol.CRLF.getBytes());
 
+		byte[] digest = new byte[0];;
 		// We are reading a file
 		if(this.getStatus() == Protocol.OK_CODE && file != null) {
+			MessageDigest md = MessageDigest.getInstance("MD5");
 			// Process text documents
 			FileInputStream fileInStream = new FileInputStream(file);
-			BufferedInputStream inStream = new BufferedInputStream(fileInStream, Protocol.CHUNK_LENGTH);
+			BufferedInputStream bufferedInStream = new BufferedInputStream(fileInStream, Protocol.CHUNK_LENGTH);
+			DigestInputStream inStream = new DigestInputStream(bufferedInStream, md);
 			
 			byte[] buffer = new byte[Protocol.CHUNK_LENGTH];
 			int bytesRead = 0;
@@ -154,10 +159,13 @@ public class HttpResponse {
 			}
 			// Close the file input stream, we are done reading
 			inStream.close();
+			digest = md.digest();
 		}
 		
 		// Flush the data so that outStream sends everything through the socket 
 		out.flush();
+		
+		this.header.put("checksum", new String(digest));
 	}
 	
 	@Override
