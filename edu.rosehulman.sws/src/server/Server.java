@@ -21,6 +21,8 @@
 
 package server;
 
+import gui.WebServer;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
@@ -37,10 +39,11 @@ import java.nio.file.StandardWatchEventKinds;
 import java.nio.file.WatchEvent;
 import java.nio.file.WatchKey;
 import java.nio.file.WatchService;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-import gui.WebServer;
 import protocol.Protocol;
 import protocol.plugin.AbstractPlugin;
 
@@ -59,6 +62,15 @@ public class Server implements Runnable {
 
 	private long connections;
 	private long serviceTime;
+	
+	private Map<String, List<Socket>> activeConnections;
+	private Map<String, List<Socket>> queuedConnections;
+	
+	private static final int MAX_PROCESSING_CONNECTIONS = 10;
+	private int numProcessingConnections;
+	
+	private List<String> bannedInetAddresses;
+	private static final int MAX_ACTIVE_CONNECTIONS_FOR_USER = 10;
 
 	private WebServer window;
 	private Map<String, AbstractPlugin> plugins;
@@ -78,7 +90,11 @@ public class Server implements Runnable {
 		this.serviceTime = 0;
 		this.window = window;
 		this.plugins = new HashMap<>();
-
+		
+		this.activeConnections = new HashMap<String, List<Socket>>();
+		this.queuedConnections = new HashMap<String, List<Socket>>();
+		this.bannedInetAddresses = new ArrayList<String>();
+		
 		// Watch for directory changes
 		watcher = FileSystems.getDefault().newWatchService();
 		Path path = Paths.get(URI.create("file:///" + PLUGIN_ROOT.replace("\\", "//").replace(" ", "%20")));
@@ -151,6 +167,14 @@ public class Server implements Runnable {
 	public synchronized void incrementConnections(long value) {
 		this.connections += value;
 	}
+	
+	public synchronized void incrementProcessingConnections(long value) {
+		this.numProcessingConnections += value;
+	}
+	
+	public synchronized void decrementProcessingConnections(long value) {
+		this.numProcessingConnections -= value;
+	}
 
 	/**
 	 * Increments the service time by the supplied value.
@@ -180,16 +204,96 @@ public class Server implements Runnable {
 				// Come out of the loop if the stop flag is set
 				if (this.stop)
 					break;
+				
+				String inetAddress = connectionSocket.getInetAddress().toString();
+				if (bannedInetAddresses.contains(inetAddress)) {
+					continue;
+				}
 
-				// Create a handler for this incoming connection and start the
-				// handler in a new thread
-				ConnectionHandler handler = new ConnectionHandler(this, connectionSocket);
-				new Thread(handler).start();
+				int numConnections = 0;
+				List<Socket> queuedSockets = null;
+				if (queuedConnections.containsKey(inetAddress)) {
+					queuedSockets = queuedConnections.get(inetAddress);
+					numConnections += queuedSockets.size();
+				} else {
+					queuedSockets = new ArrayList<Socket>();
+					queuedConnections.put(inetAddress, queuedSockets);
+				}
+				
+				List<Socket> activeSockets = new ArrayList<Socket>();
+				if (activeConnections.containsKey(inetAddress)) {
+					activeSockets = activeConnections.get(inetAddress);
+					numConnections += activeConnections.get(inetAddress).size();
+				}
+				
+				if (numConnections + 1 > MAX_PROCESSING_CONNECTIONS) {
+					this.bannedInetAddresses.add(inetAddress);
+					queuedSockets.clear();
+					activeSockets.clear();
+					continue;
+				}
+				
+				queuedSockets.add(connectionSocket);
 			}
 			this.welcomeSocket.close();
 		} catch (Exception e) {
 			window.showSocketException(e);
 		}
+	}
+	
+	private class PriorityQueueHandler implements Runnable {
+		
+		private Server server;
+		
+		public PriorityQueueHandler(Server server) {
+			this.server = server;
+		}
+
+		/* (non-Javadoc)
+		 * @see java.lang.Runnable#run()
+		 */
+		@Override
+		public void run() {
+			while (true) {
+				for (String key : activeConnections.keySet()) {
+					while (numProcessingConnections > MAX_PROCESSING_CONNECTIONS) {
+						try {
+							Thread.sleep(100);
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
+					}
+					server.incrementProcessingConnections(1);
+					
+					List<Socket> activeRequests = activeConnections.get(key);
+					
+					Socket connectionToHandle = activeRequests.get(0);
+					// Create a handler for this connection and start the
+					// handler in a new thread
+					ConnectionHandler handler = new ConnectionHandler(server, connectionToHandle);
+					new Thread(handler).start();
+					
+					activeRequests.remove(0);
+					if (activeRequests.size() <= 0) {
+						activeConnections.remove(key);
+					}
+				}
+				
+				for (String key : queuedConnections.keySet()) {
+					List<Socket> requestsToAdd = queuedConnections.get(key);
+					queuedConnections.remove(key);
+					List<Socket> activeRequests = null;
+					if (activeConnections.containsKey(key)) {
+						activeRequests = activeConnections.get(key);
+					} else {
+						activeRequests = new ArrayList<Socket>();
+						activeConnections.put(key, activeRequests);
+					}
+					activeRequests.addAll(requestsToAdd);
+				}
+			}
+		}
+		
 	}
 
 	/**
