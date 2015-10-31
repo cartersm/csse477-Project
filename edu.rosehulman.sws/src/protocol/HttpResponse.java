@@ -18,11 +18,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/lgpl.html>.
  * 
  */
- 
+
 package protocol;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.OutputStream;
@@ -43,15 +44,19 @@ public class HttpResponse {
 	private Map<String, String> header;
 	private File file;
 
-	
 	/**
 	 * Constructs a HttpResponse object using supplied parameter
 	 * 
-	 * @param version The http version.
-	 * @param status The response status.
-	 * @param phrase The response status phrase.
-	 * @param header The header field map.
-	 * @param file The file to be sent.
+	 * @param version
+	 *            The http version.
+	 * @param status
+	 *            The response status.
+	 * @param phrase
+	 *            The response status phrase.
+	 * @param header
+	 *            The header field map.
+	 * @param file
+	 *            The file to be sent.
 	 */
 	public HttpResponse(String version, int status, String phrase, Map<String, String> header, File file) {
 		this.version = version;
@@ -72,6 +77,7 @@ public class HttpResponse {
 
 	/**
 	 * Gets the status code of the response object.
+	 * 
 	 * @return the status
 	 */
 	public int getStatus() {
@@ -86,7 +92,7 @@ public class HttpResponse {
 	public String getPhrase() {
 		return phrase;
 	}
-	
+
 	/**
 	 * The file to be sent.
 	 * 
@@ -98,6 +104,7 @@ public class HttpResponse {
 
 	/**
 	 * Returns the header fields associated with the response object.
+	 * 
 	 * @return the header
 	 */
 	public Map<String, String> getHeader() {
@@ -107,32 +114,59 @@ public class HttpResponse {
 
 	/**
 	 * Maps a key to value in the header map.
-	 * @param key A key, e.g. "Host"
-	 * @param value A value, e.g. "www.rose-hulman.edu"
+	 * 
+	 * @param key
+	 *            A key, e.g. "Host"
+	 * @param value
+	 *            A value, e.g. "www.rose-hulman.edu"
 	 */
 	public void put(String key, String value) {
 		this.header.put(key, value);
 	}
-	
+
 	/**
 	 * Writes the data of the http response object to the output stream.
 	 * 
-	 * @param outStream The output stream
+	 * @param outStream
+	 *            The output stream
 	 * @throws Exception
 	 */
 	public void write(OutputStream outStream) throws Exception {
+		// We are reading a file
+		ByteArrayOutputStream fileOut = new ByteArrayOutputStream(Protocol.CHUNK_LENGTH);
+		if (this.getStatus() == Protocol.OK_CODE && file != null) {
+			byte[] digest = new byte[0];
+			MessageDigest md = MessageDigest.getInstance("MD5");
+			// Process text documents
+			FileInputStream fileInStream = new FileInputStream(file);
+			BufferedInputStream bufferedInStream = new BufferedInputStream(fileInStream, Protocol.CHUNK_LENGTH);
+			DigestInputStream inStream = new DigestInputStream(bufferedInStream, md);
+
+			byte[] buffer = new byte[Protocol.CHUNK_LENGTH];
+			int bytesRead = 0;
+			// While there is some bytes to read from file, read each chunk and
+			// send to the socket out stream
+			while ((bytesRead = inStream.read(buffer)) != -1) {
+				fileOut.write(buffer, 0, bytesRead);
+			}
+			// Close the file input stream, we are done reading
+			inStream.close();
+			digest = md.digest();
+			this.header.put("checksum", new String(digest));
+		}
+
 		BufferedOutputStream out = new BufferedOutputStream(outStream, Protocol.CHUNK_LENGTH);
 
 		// First status line
 		String line = this.version + Protocol.SPACE + this.status + Protocol.SPACE + this.phrase + Protocol.CRLF;
 		out.write(line.getBytes());
-		
+
 		// Write header fields if there is something to write in header field
-		if(header != null && !header.isEmpty()) {
-			for(Map.Entry<String, String> entry : header.entrySet()) {
+		if (header != null && !header.isEmpty()) {
+			for (Map.Entry<String, String> entry : header.entrySet()) {
 				String key = entry.getKey();
 				String value = entry.getValue();
-				
+
 				// Write each header field line
 				line = key + Protocol.SEPERATOR + Protocol.SPACE + value + Protocol.CRLF;
 				out.write(line.getBytes());
@@ -142,32 +176,16 @@ public class HttpResponse {
 		// Write a blank line
 		out.write(Protocol.CRLF.getBytes());
 
-		byte[] digest = new byte[0];;
-		// We are reading a file
-		if(this.getStatus() == Protocol.OK_CODE && file != null) {
-			MessageDigest md = MessageDigest.getInstance("MD5");
-			// Process text documents
-			FileInputStream fileInStream = new FileInputStream(file);
-			BufferedInputStream bufferedInStream = new BufferedInputStream(fileInStream, Protocol.CHUNK_LENGTH);
-			DigestInputStream inStream = new DigestInputStream(bufferedInStream, md);
-			
-			byte[] buffer = new byte[Protocol.CHUNK_LENGTH];
-			int bytesRead = 0;
-			// While there is some bytes to read from file, read each chunk and send to the socket out stream
-			while((bytesRead = inStream.read(buffer)) != -1) {
-				out.write(buffer, 0, bytesRead);
-			}
-			// Close the file input stream, we are done reading
-			inStream.close();
-			digest = md.digest();
+		if (this.getStatus() == Protocol.OK_CODE && file != null) {
+			out.write(fileOut.toByteArray());
 		}
-		
-		// Flush the data so that outStream sends everything through the socket 
+		fileOut.close();
+
+		// Flush the data so that outStream sends everything through the socket
 		out.flush();
-		
-		this.header.put("checksum", new String(digest));
+
 	}
-	
+
 	@Override
 	public String toString() {
 		StringBuffer buffer = new StringBuffer();
@@ -178,22 +196,22 @@ public class HttpResponse {
 		buffer.append(Protocol.SPACE);
 		buffer.append(this.phrase);
 		buffer.append(Protocol.LF);
-		
-		for(Map.Entry<String, String> entry : this.header.entrySet()) {
+
+		for (Map.Entry<String, String> entry : this.header.entrySet()) {
 			buffer.append(entry.getKey());
 			buffer.append(Protocol.SEPERATOR);
 			buffer.append(Protocol.SPACE);
 			buffer.append(entry.getValue());
 			buffer.append(Protocol.LF);
 		}
-		
+
 		buffer.append(Protocol.LF);
-		if(file != null) {
+		if (file != null) {
 			buffer.append("Data: ");
 			buffer.append(this.file.getAbsolutePath());
 		}
 		buffer.append("\n----------------------------------\n");
 		return buffer.toString();
 	}
-	
+
 }
