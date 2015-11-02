@@ -103,7 +103,8 @@ public class ConnectionHandler implements Runnable {
 			// Protocol.BAD_REQUEST_CODE and Protocol.NOT_SUPPORTED_CODE
 			int status = pe.getStatus();
 			if (status == Protocol.BAD_REQUEST_CODE) {
-				response = HttpResponseFactory.create400BadRequest(Protocol.CLOSE);
+				response = HttpResponseFactory
+						.create400BadRequest(Protocol.CLOSE);
 			}
 			// TODO: Handle version not supported code as well
 		} catch (Exception e) {
@@ -144,11 +145,20 @@ public class ConnectionHandler implements Runnable {
 				// "request.version" string ignoring the case of the letters in
 				// both strings
 			} else {
-				AbstractPlugin plugin = getPluginfromUri(request.getUri());
-				if (plugin != null) {
-					response = plugin.handle(request);
+
+				if (request.getUri().contains("favicon") || request.getUri().equals("/")) {
+					response = HttpResponseFactory
+							.create400BadRequest(Protocol.CLOSE);
 				} else {
-					response = HttpResponseFactory.create400BadRequest(Protocol.CLOSE);
+
+					AbstractPlugin plugin = getPluginfromUri(request.getUri());
+					if (plugin != null) {
+						response = plugin.handle(request);
+					} else {
+						response = HttpResponseFactory
+								.create400BadRequest(Protocol.CLOSE);
+					}
+					this.server.addToAuditTrail(request);
 				}
 			}
 		} catch (Exception e) {
@@ -180,7 +190,7 @@ public class ConnectionHandler implements Runnable {
 	}
 
 	private AbstractPlugin getPluginfromUri(String uri) {
-		// FIXME: 400 on favicon.ico request
+		System.out.println("--------" + uri + "---------");
 		final String pluginString = uri.substring(1, uri.indexOf("/", 1));
 		return this.server.getPlugin(pluginString);
 	}

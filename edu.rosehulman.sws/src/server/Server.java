@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.Map;
 
 import gui.WebServer;
+import protocol.HttpRequest;
 import protocol.plugin.AbstractPlugin;
 
 /**
@@ -60,6 +61,9 @@ public class Server implements Runnable {
 
 	private WebServer window;
 	private Map<String, AbstractPlugin> plugins;
+	
+	private static final int MAX_SIZE_OF_AUDIT_TRAIL = 100;
+	private List<HttpRequest> auditTrail;
 
 	/**
 	 * @param rootDirectory
@@ -74,6 +78,15 @@ public class Server implements Runnable {
 		this.serviceTime = 0;
 		this.window = window;
 		this.plugins = new HashMap<>();
+		
+		this.activeConnections = new HashMap<String, List<Socket>>();
+		this.queuedConnections = new HashMap<String, List<Socket>>();
+		this.bannedInetAddresses = new ArrayList<String>();
+		this.numProcessingConnections = 0;
+		this.auditTrail = new ArrayList<HttpRequest>();
+		
+		PriorityQueueHandler queueHandler = new PriorityQueueHandler(this);
+		new Thread(queueHandler).start();
 	}
 
 	/**
@@ -125,6 +138,13 @@ public class Server implements Runnable {
 	public synchronized void decrementProcessingConnections(long value) {
 		this.numProcessingConnections -= value;
 	}
+	
+	public synchronized void addToAuditTrail(HttpRequest request) {
+		if (auditTrail.size() >= MAX_SIZE_OF_AUDIT_TRAIL) {
+			auditTrail.remove(0);
+		}
+		this.auditTrail.add(request);
+	}
 
 	/**
 	 * Increments the service time by the supplied value.
@@ -156,7 +176,9 @@ public class Server implements Runnable {
 					break;
 				
 				String inetAddress = connectionSocket.getInetAddress().toString();
+				System.out.println("Request from " + inetAddress);
 				if (bannedInetAddresses.contains(inetAddress)) {
+					System.out.println("But " + inetAddress + " is banned!");
 					continue;
 				}
 
@@ -176,7 +198,7 @@ public class Server implements Runnable {
 					numConnections += activeConnections.get(inetAddress).size();
 				}
 				
-				if (numConnections + 1 > MAX_PROCESSING_CONNECTIONS) {
+				if (numConnections + 1 > MAX_ACTIVE_CONNECTIONS_FOR_USER) {
 					this.bannedInetAddresses.add(inetAddress);
 					queuedSockets.clear();
 					activeSockets.clear();
