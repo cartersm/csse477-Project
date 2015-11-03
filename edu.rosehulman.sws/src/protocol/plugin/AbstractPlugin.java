@@ -69,7 +69,7 @@ public abstract class AbstractPlugin {
 		return HttpResponseFactory.create400BadRequest(Protocol.CLOSE);
 	}
 
-	public abstract Map<String, IServlet> createServlets();
+	protected abstract Map<String, IServlet> createServlets();
 
 	/**
 	 * Retrieves a Servlet from this Plugin's IServlet map.

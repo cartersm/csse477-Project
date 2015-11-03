@@ -31,6 +31,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import gui.WebServer;
 import protocol.HttpRequest;
 import protocol.plugin.AbstractPlugin;
@@ -42,6 +45,7 @@ import protocol.plugin.AbstractPlugin;
  * @author Chandan R. Rupakheti (rupakhet@rose-hulman.edu)
  */
 public class Server implements Runnable {
+	private static final Logger LOGGER = LogManager.getLogger(Server.class);
 	private String rootDirectory;
 	private int port;
 	private boolean stop;
@@ -140,10 +144,7 @@ public class Server implements Runnable {
 	}
 	
 	public synchronized void addToAuditTrail(HttpRequest request) {
-		if (auditTrail.size() >= MAX_SIZE_OF_AUDIT_TRAIL) {
-			auditTrail.remove(0);
-		}
-		this.auditTrail.add(request);
+		LOGGER.info("\n" + request);
 	}
 
 	/**
