@@ -36,8 +36,8 @@ import protocol.HttpRequest;
 import protocol.plugin.AbstractPlugin;
 
 /**
- * This represents a welcoming server for the incoming
- * TCP request from a HTTP client such as a web browser. 
+ * This represents a welcoming server for the incoming TCP request from a HTTP
+ * client such as a web browser.
  * 
  * @author Chandan R. Rupakheti (rupakhet@rose-hulman.edu)
  */
@@ -49,19 +49,19 @@ public class Server implements Runnable {
 
 	private long connections;
 	private long serviceTime;
-	
+
 	private Map<String, List<Socket>> activeConnections;
 	private Map<String, List<Socket>> queuedConnections;
-	
+
 	private static final int MAX_PROCESSING_CONNECTIONS = 10;
 	private int numProcessingConnections;
-	
+
 	private List<String> bannedInetAddresses;
 	private static final int MAX_ACTIVE_CONNECTIONS_FOR_USER = 10;
 
 	private WebServer window;
 	private Map<String, AbstractPlugin> plugins;
-	
+
 	private static final int MAX_SIZE_OF_AUDIT_TRAIL = 100;
 	private List<HttpRequest> auditTrail;
 
@@ -70,7 +70,8 @@ public class Server implements Runnable {
 	 * @param port
 	 * @throws IOException
 	 */
-	public Server(String rootDirectory, int port, WebServer window) throws IOException {
+	public Server(String rootDirectory, int port, WebServer window)
+			throws IOException {
 		this.rootDirectory = rootDirectory;
 		this.port = port;
 		this.stop = false;
@@ -78,13 +79,13 @@ public class Server implements Runnable {
 		this.serviceTime = 0;
 		this.window = window;
 		this.plugins = new HashMap<>();
-		
+
 		this.activeConnections = new HashMap<String, List<Socket>>();
 		this.queuedConnections = new HashMap<String, List<Socket>>();
 		this.bannedInetAddresses = new ArrayList<String>();
 		this.numProcessingConnections = 0;
 		this.auditTrail = new ArrayList<HttpRequest>();
-		
+
 		PriorityQueueHandler queueHandler = new PriorityQueueHandler(this);
 		new Thread(queueHandler).start();
 	}
@@ -108,8 +109,8 @@ public class Server implements Runnable {
 	}
 
 	/**
-	 * Returns connections serviced per second. 
-	 * Synchronized to be used in threaded environment.
+	 * Returns connections serviced per second. Synchronized to be used in
+	 * threaded environment.
 	 * 
 	 * @return
 	 */
@@ -122,23 +123,23 @@ public class Server implements Runnable {
 	}
 
 	/**
-	 * Increments number of connection by the supplied value.
-	 * Synchronized to be used in threaded environment.
+	 * Increments number of connection by the supplied value. Synchronized to be
+	 * used in threaded environment.
 	 * 
 	 * @param value
 	 */
 	public synchronized void incrementConnections(long value) {
 		this.connections += value;
 	}
-	
+
 	public synchronized void incrementProcessingConnections(long value) {
 		this.numProcessingConnections += value;
 	}
-	
+
 	public synchronized void decrementProcessingConnections(long value) {
 		this.numProcessingConnections -= value;
 	}
-	
+
 	public synchronized void addToAuditTrail(HttpRequest request) {
 		if (auditTrail.size() >= MAX_SIZE_OF_AUDIT_TRAIL) {
 			auditTrail.remove(0);
@@ -147,8 +148,8 @@ public class Server implements Runnable {
 	}
 
 	/**
-	 * Increments the service time by the supplied value.
-	 * Synchronized to be used in threaded environment.
+	 * Increments the service time by the supplied value. Synchronized to be
+	 * used in threaded environment.
 	 * 
 	 * @param value
 	 */
@@ -157,9 +158,9 @@ public class Server implements Runnable {
 	}
 
 	/**
-	 * The entry method for the main server thread that accepts incoming
-	 * TCP connection request and creates a {@link ConnectionHandler} for
-	 * the request.
+	 * The entry method for the main server thread that accepts incoming TCP
+	 * connection request and creates a {@link ConnectionHandler} for the
+	 * request.
 	 */
 	public void run() {
 		try {
@@ -167,6 +168,9 @@ public class Server implements Runnable {
 
 			// Now keep welcoming new connections until stop flag is set to true
 			while (true) {
+				// ////////////////////////////////////////////////////////////
+				// New Code
+
 				// Listen for incoming socket connection
 				// This method block until somebody makes a request
 				Socket connectionSocket = this.welcomeSocket.accept();
@@ -174,8 +178,9 @@ public class Server implements Runnable {
 				// Come out of the loop if the stop flag is set
 				if (this.stop)
 					break;
-				
-				String inetAddress = connectionSocket.getInetAddress().toString();
+
+				String inetAddress = connectionSocket.getInetAddress()
+						.toString();
 				System.out.println("Request from " + inetAddress);
 				if (bannedInetAddresses.contains(inetAddress)) {
 					System.out.println("But " + inetAddress + " is banned!");
@@ -191,37 +196,57 @@ public class Server implements Runnable {
 					queuedSockets = new ArrayList<Socket>();
 					queuedConnections.put(inetAddress, queuedSockets);
 				}
-				
+
 				List<Socket> activeSockets = new ArrayList<Socket>();
 				if (activeConnections.containsKey(inetAddress)) {
 					activeSockets = activeConnections.get(inetAddress);
 					numConnections += activeConnections.get(inetAddress).size();
 				}
-				
+
 				if (numConnections + 1 > MAX_ACTIVE_CONNECTIONS_FOR_USER) {
 					this.bannedInetAddresses.add(inetAddress);
 					queuedSockets.clear();
 					activeSockets.clear();
 					continue;
 				}
-				
+
 				queuedSockets.add(connectionSocket);
+
+				// ///////////////////////////////////////////////////////////////
+				// Old Code
+				// // Listen for incoming socket connection
+				// // This method block until somebody makes a request
+				//
+				// Socket connectionSocket = this.welcomeSocket.accept();
+				//
+				// // Come out of the loop if the stop flag is set
+				// if (this.stop)
+				// break;
+				//
+				// // Create a handler for this incoming connection and start
+				// // the handler in a new thread
+				// ConnectionHandler handler = new ConnectionHandler(this,
+				// connectionSocket);
+				// new Thread(handler).start();
+
 			}
 			this.welcomeSocket.close();
 		} catch (Exception e) {
 			window.showSocketException(e);
 		}
 	}
-	
+
 	private class PriorityQueueHandler implements Runnable {
-		
+
 		private Server server;
-		
+
 		public PriorityQueueHandler(Server server) {
 			this.server = server;
 		}
 
-		/* (non-Javadoc)
+		/*
+		 * (non-Javadoc)
+		 * 
 		 * @see java.lang.Runnable#run()
 		 */
 		@Override
@@ -236,21 +261,22 @@ public class Server implements Runnable {
 						}
 					}
 					server.incrementProcessingConnections(1);
-					
+
 					List<Socket> activeRequests = activeConnections.get(key);
-					
+
 					Socket connectionToHandle = activeRequests.get(0);
 					// Create a handler for this connection and start the
 					// handler in a new thread
-					ConnectionHandler handler = new ConnectionHandler(server, connectionToHandle);
+					ConnectionHandler handler = new ConnectionHandler(server,
+							connectionToHandle);
 					new Thread(handler).start();
-					
+
 					activeRequests.remove(0);
 					if (activeRequests.size() <= 0) {
 						activeConnections.remove(key);
 					}
 				}
-				
+
 				for (String key : queuedConnections.keySet()) {
 					List<Socket> requestsToAdd = queuedConnections.get(key);
 					queuedConnections.remove(key);
@@ -265,7 +291,7 @@ public class Server implements Runnable {
 				}
 			}
 		}
-		
+
 	}
 
 	/**
@@ -278,7 +304,8 @@ public class Server implements Runnable {
 		// Set the stop flag to be true
 		this.stop = true;
 		try {
-			// This will force welcomeSocket to come out of the blocked accept() method 
+			// This will force welcomeSocket to come out of the blocked accept()
+			// method
 			// in the main loop of the start() method
 			Socket socket = new Socket(InetAddress.getLocalHost(), port);
 
@@ -290,6 +317,7 @@ public class Server implements Runnable {
 
 	/**
 	 * Checks if the server is stopeed or not.
+	 * 
 	 * @return
 	 */
 	public boolean isStopped() {
