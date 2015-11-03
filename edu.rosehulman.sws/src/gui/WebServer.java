@@ -226,7 +226,7 @@ public class WebServer extends JFrame {
 				WebServer.this.disableWidgets();
 
 				// Now run the server in a separate thread
-				new Thread(server).start();
+				new Thread(new TimerThread(server)).start();
 
 				// Also run the service rate updater thread
 				new Thread(rateUpdater).start();

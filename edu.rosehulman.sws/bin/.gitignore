@@ -1,5 +1,3 @@
-/gui/
-/protocol/
+/edu/
 /server/
-/BasicPlugin.class
-/BasicServlet.class
+/gui/
