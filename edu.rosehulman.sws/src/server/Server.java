@@ -250,6 +250,7 @@ public class Server implements Runnable {
 
 			// Now keep welcoming new connections until stop flag is set to true
 			while (true) {
+				
 				// ////////////////////////////////////////////////////////////
 				// New Code
 
@@ -282,20 +283,20 @@ public class Server implements Runnable {
 
 				// ///////////////////////////////////////////////////////////////
 				// Old Code
-				// // Listen for incoming socket connection
-				// // This method block until somebody makes a request
-				//
-				// Socket connectionSocket = this.welcomeSocket.accept();
-				//
-				// // Come out of the loop if the stop flag is set
-				// if (this.stop)
-				// break;
-				//
-				// // Create a handler for this incoming connection and start
-				// // the handler in a new thread
-				// ConnectionHandler handler = new ConnectionHandler(this,
-				// connectionSocket);
-				// new Thread(handler).start();
+//				 // Listen for incoming socket connection
+//				 // This method block until somebody makes a request
+//				
+//				 Socket connectionSocket = this.welcomeSocket.accept();
+//				
+//				 // Come out of the loop if the stop flag is set
+//				 if (this.stop)
+//				 break;
+//				
+//				 // Create a handler for this incoming connection and start
+//				 // the handler in a new thread
+//				 ConnectionHandler handler = new ConnectionHandler(this,
+//				 connectionSocket);
+//				 new Thread(handler).start();
 
 			}
 			this.welcomeSocket.close();
@@ -320,6 +321,12 @@ public class Server implements Runnable {
 		@Override
 		public void run() {
 			while (true) {
+				try {
+					Thread.sleep(5000);
+				} catch (InterruptedException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 				final Socket connection = server.getNextConnection();
 				if (connection == null) {
 					try {
