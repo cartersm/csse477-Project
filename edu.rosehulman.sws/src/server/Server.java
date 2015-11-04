@@ -163,6 +163,31 @@ public class Server implements Runnable {
 			this.waitingRequests.add(connection);
 		}
 	}
+	
+	public synchronized Socket getNextConnection() {
+		synchronized (this.waitingRequestsLock) {
+			synchronized (this.hadATurnLock) {
+				if (waitingRequests.size() <= 0) {
+					return null;
+				}
+				
+				for (int i = 0; i < this.waitingRequests.size(); i++) {
+					Socket connection = this.waitingRequests.get(i);
+					if (this.hadATurn.contains(connection.getInetAddress().toString())) {
+						continue;
+					}
+					this.hadATurn.add(connection.getInetAddress().toString());
+					this.waitingRequests.remove(i);
+					return connection;
+				}
+				
+				this.hadATurn = new ArrayList<String>();
+				Socket connection = this.waitingRequests.get(0);
+				this.waitingRequests.remove(0);
+				return connection;
+			}
+		}
+	}
 
 	public synchronized void removeAllRequests(String inetAddress) {
 		synchronized (this.waitingRequestsLock) {
@@ -207,6 +232,17 @@ public class Server implements Runnable {
 			}
 		}
 	}
+	
+	public synchronized void decrementNumActiveRequests(String inetAddress) {
+		synchronized (this.numActiveRequestsLock) {
+			if (this.numActiveRequests.containsKey(inetAddress)) {
+				int numActiveRequests = this.numActiveRequests.get(inetAddress);
+				this.numActiveRequests.put(inetAddress, numActiveRequests - 1);
+			} else {
+				this.numActiveRequests.put(inetAddress, 1);
+			}
+		}
+	}
 
 	public void run() {
 		try {
@@ -229,11 +265,13 @@ public class Server implements Runnable {
 						.toString();
 
 				if (this.userIsBanned(inetAddress)) {
+					System.out.println(inetAddress + "'s request was ignored because he is banned.");
 					continue;
 				}
 
 				int numActiveRequests = this.getNumActiveRequests(inetAddress);
 				if (numActiveRequests > 10) {
+					System.out.println(inetAddress + " was banned for making too many requests.");
 					this.addBanneduser(inetAddress);
 					this.removeAllRequests(inetAddress);
 					continue;
@@ -282,7 +320,24 @@ public class Server implements Runnable {
 		@Override
 		public void run() {
 			while (true) {
-				Socket connection = this.getNextConnection();
+				final Socket connection = server.getNextConnection();
+				if (connection == null) {
+					try {
+						Thread.sleep(100);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+					continue;
+				}
+				
+				 final ConnectionHandler handler = new ConnectionHandler(this.server, connection);
+				 new Thread(new Runnable() {
+					@Override
+					public void run() {
+						handler.run();
+						server.decrementNumActiveRequests(connection.getInetAddress().toString());
+					} 
+				 }).start();
 			}
 		}
 

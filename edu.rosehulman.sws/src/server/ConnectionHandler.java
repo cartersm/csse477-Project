@@ -93,7 +93,6 @@ public class ConnectionHandler implements Runnable {
 		HttpResponse response = null;
 		try {
 			request = HttpRequest.read(inStream);
-			System.out.println(request);
 		} catch (ProtocolException pe) {
 			// We have some sort of protocol exception. Get its status code and
 			// create response
@@ -156,6 +155,7 @@ public class ConnectionHandler implements Runnable {
 						response = HttpResponseFactory
 								.create400BadRequest(Protocol.CLOSE);
 					}
+					System.out.println(request.getMethod() + " request to " + request.getUri() + " from " + this.socket.getInetAddress());
 					this.server.addToAuditTrail(request);
 				}
 			}
@@ -188,7 +188,6 @@ public class ConnectionHandler implements Runnable {
 	}
 
 	private AbstractPlugin getPluginfromUri(String uri) {
-		System.out.println("--------" + uri + "---------");
 		final String pluginString = uri.substring(1, uri.indexOf("/", 1));
 		return this.server.getPlugin(pluginString);
 	}
