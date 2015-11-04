@@ -1,0 +1,197 @@
+2015-11-02 22:37:27,530 Thread-8 INFO  server.Server - 
+----------- Header ----------------
+GET /BasicPlugin/BasicServlet HTTP/1.1
+cache-control: no-cache
+connection: keep-alive
+accept-language: en-US,en;q=0.8
+host: localhost:8080
+accept: */*
+postman-token: ddfc72cd-9f28-72c5-5a6f-55459a876777
+user-agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36
+accept-encoding: gzip, deflate, sdch
+dnt: 1
+------------- Body ---------------
+----------------------------------
+
+2015-11-02 22:37:47,803 Thread-9 INFO  server.Server - 
+----------- Header ----------------
+GET /BasicPlugin/BasicServlet HTTP/1.1
+cache-control: no-cache
+connection: keep-alive
+accept-language: en-US,en;q=0.8
+host: localhost:8080
+accept: */*
+postman-token: 3eb859f7-4363-1f4a-c056-318f9a5c892a
+user-agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36
+accept-encoding: gzip, deflate, sdch
+dnt: 1
+------------- Body ---------------
+----------------------------------
+
+2015-11-02 22:39:13,275 Thread-8 INFO  server.Server - 
+----------- Header ----------------
+GET /BasicPlugin/BasicServlet HTTP/1.1
+cache-control: no-cache
+connection: keep-alive
+accept-language: en-US,en;q=0.8
+host: localhost:8080
+accept: */*
+postman-token: df793fd0-88db-c1a8-4bd6-4f3b4237936e
+user-agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36
+accept-encoding: gzip, deflate, sdch
+dnt: 1
+------------- Body ---------------
+----------------------------------
+
+2015-11-02 22:39:17,140 Thread-9 INFO  server.Server - 
+----------- Header ----------------
+GET /BasicPlugin/BasicServlet HTTP/1.1
+cache-control: no-cache
+connection: keep-alive
+accept-language: en-US,en;q=0.8
+host: localhost:8080
+accept: */*
+postman-token: c5814a68-9f06-0d0c-0ee8-db47a69b34ed
+user-agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36
+accept-encoding: gzip, deflate, sdch
+dnt: 1
+------------- Body ---------------
+----------------------------------
+
+2015-11-02 22:39:21,838 Thread-10 INFO  server.Server - 
+----------- Header ----------------
+GET /BasicPlugin/BasicServlet HTTP/1.1
+cache-control: no-cache
+connection: keep-alive
+accept-language: en-US,en;q=0.8
+host: localhost:8080
+accept: */*
+postman-token: 42b3c7df-ee2b-4f76-aa3a-16c8a8c568ea
+user-agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36
+accept-encoding: gzip, deflate, sdch
+dnt: 1
+------------- Body ---------------
+----------------------------------
+
+2015-11-02 22:39:35,299 Thread-15 INFO  server.Server - 
+----------- Header ----------------
+GET /BasicPlugin/index.html HTTP/1.1
+cache-control: no-cache
+connection: keep-alive
+accept-language: en-US,en;q=0.8
+host: localhost:8080
+accept: */*
+postman-token: 3c9dfbda-e458-7319-8990-9b8ab724b442
+user-agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36
+accept-encoding: gzip, deflate, sdch
+dnt: 1
+------------- Body ---------------
+----------------------------------
+
+2015-11-02 22:39:37,000 Thread-16 INFO  server.Server - 
+----------- Header ----------------
+GET /BasicPlugin/index.html HTTP/1.1
+cache-control: no-cache
+connection: keep-alive
+accept-language: en-US,en;q=0.8
+host: localhost:8080
+accept: */*
+postman-token: b4fd09f1-5d59-74fa-b91a-c55a9b98a19b
+user-agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36
+accept-encoding: gzip, deflate, sdch
+dnt: 1
+------------- Body ---------------
+----------------------------------
+
+2015-11-02 22:41:09,015 Thread-21 INFO  server.Server - 
+----------- Header ----------------
+GET /BasicPlugin/index.html HTTP/1.1
+cache-control: no-cache
+connection: keep-alive
+accept-language: en-US,en;q=0.8
+host: localhost:8080
+accept: */*
+postman-token: 663c5d97-9d02-1c9b-d7cc-8986f6f26dd1
+user-agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36
+accept-encoding: gzip, deflate, sdch
+dnt: 1
+------------- Body ---------------
+----------------------------------
+
+2015-11-04 12:24:49,848 Thread-8 INFO  server.Server - 
+----------- Header ----------------
+GET /BasicPlugin/HelloServlet HTTP/1.1
+connection: keep-alive
+accept-language: en-US,en;q=0.8
+host: localhost:8080
+accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8
+user-agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36
+accept-encoding: gzip, deflate, sdch
+dnt: 1
+upgrade-insecure-requests: 1
+------------- Body ---------------
+----------------------------------
+
+2015-11-04 12:30:25,564 Thread-10 INFO  server.Server - 
+----------- Header ----------------
+GET /BasicPlugin/HelloServlet HTTP/1.1
+if-modified-since: Wed Nov 04 12:21:00 EST 2015
+connection: keep-alive
+accept-language: en-US,en;q=0.8
+host: localhost:8080
+accept: application/json
+origin: http://localhost:8000
+user-agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36
+accept-encoding: gzip, deflate, sdch
+referer: http://localhost:8000/app/index.html
+dnt: 1
+------------- Body ---------------
+----------------------------------
+
+2015-11-04 12:31:30,665 Thread-15 INFO  server.Server - 
+----------- Header ----------------
+GET /BasicPlugin/HelloServlet HTTP/1.1
+cache-control: no-cache
+connection: keep-alive
+accept-language: en-US,en;q=0.8
+host: localhost:8080
+accept: */*
+postman-token: 0b7a64ef-bbda-6f70-b5ce-912c9aec4158
+user-agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36
+accept-encoding: gzip, deflate, sdch
+dnt: 1
+------------- Body ---------------
+----------------------------------
+
+2015-11-04 12:36:00,433 Thread-8 INFO  server.Server - 
+----------- Header ----------------
+GET /BasicPlugin/HelloServlet HTTP/1.1
+if-modified-since: Wed Nov 04 12:21:00 EST 2015
+connection: keep-alive
+accept-language: en-US,en;q=0.8
+host: localhost:8080
+accept: application/json, text/plain, */*
+origin: http://localhost:8000
+user-agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36
+accept-encoding: gzip, deflate, sdch
+referer: http://localhost:8000/app/index.html
+dnt: 1
+------------- Body ---------------
+----------------------------------
+
+2015-11-04 12:42:47,857 Thread-9 INFO  server.Server - 
+----------- Header ----------------
+GET /BasicPlugin/HelloServlet HTTP/1.1
+if-modified-since: Wed Nov 04 12:21:00 EST 2015
+connection: keep-alive
+accept-language: en-US,en;q=0.8
+host: localhost:8080
+accept: application/json, text/plain, */*
+origin: http://localhost:8000
+user-agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36
+accept-encoding: gzip, deflate, sdch
+referer: http://localhost:8000/app/index.html
+dnt: 1
+------------- Body ---------------
+----------------------------------
+
