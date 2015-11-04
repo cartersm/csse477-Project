@@ -67,6 +67,12 @@ public class Server implements Runnable {
 
 	private final Object numActiveRequestsLock = new Object();
 	private Map<String, Integer> numActiveRequests;
+	
+	private final Object numProcessingRequestsLock = new Object();
+	private int numProcessingRequests;
+	
+	private static final int MAX_NUM_REQUESTS_BEFORE_BAN = 10;
+	private static final int MAX_PROCESSING_REQUESTS = 5;
 
 	/**
 	 * @param rootDirectory
@@ -87,6 +93,7 @@ public class Server implements Runnable {
 		this.bannedUsers = new ArrayList<String>();
 		this.numActiveRequests = new HashMap<String, Integer>();
 		this.hadATurn = new ArrayList<String>();
+		this.numProcessingRequests = 0;
 
 		this.auditTrail = new ArrayList<HttpRequest>();
 
@@ -243,6 +250,18 @@ public class Server implements Runnable {
 			}
 		}
 	}
+	
+	public synchronized void incrementNumProcessingRequests() {
+		synchronized (this.numProcessingRequestsLock) {
+			this.numProcessingRequests++;
+		}
+	}
+	
+	public synchronized void decrementNumProcessingRequests() {
+		synchronized (this.numProcessingRequestsLock) {
+			this.numProcessingRequests--;
+		}
+	}
 
 	public void run() {
 		try {
@@ -250,7 +269,6 @@ public class Server implements Runnable {
 
 			// Now keep welcoming new connections until stop flag is set to true
 			while (true) {
-				
 				// ////////////////////////////////////////////////////////////
 				// New Code
 
@@ -271,7 +289,7 @@ public class Server implements Runnable {
 				}
 
 				int numActiveRequests = this.getNumActiveRequests(inetAddress);
-				if (numActiveRequests > 10) {
+				if (numActiveRequests > Server.MAX_NUM_REQUESTS_BEFORE_BAN) {
 					System.out.println(inetAddress + " was banned for making too many requests.");
 					this.addBanneduser(inetAddress);
 					this.removeAllRequests(inetAddress);
@@ -283,9 +301,9 @@ public class Server implements Runnable {
 
 				// ///////////////////////////////////////////////////////////////
 				// Old Code
-//				 // Listen for incoming socket connection
-//				 // This method block until somebody makes a request
-//				
+				 // Listen for incoming socket connection
+				 // This method block until somebody makes a request
+				
 //				 Socket connectionSocket = this.welcomeSocket.accept();
 //				
 //				 // Come out of the loop if the stop flag is set
@@ -320,13 +338,19 @@ public class Server implements Runnable {
 		 */
 		@Override
 		public void run() {
-			while (true) {
-				try {
-					Thread.sleep(5000);
-				} catch (InterruptedException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
+			while (true) {				
+				if (server.numProcessingRequests >= Server.MAX_PROCESSING_REQUESTS) {
+					try {
+						System.out.println("Currently processing" + Server.MAX_PROCESSING_REQUESTS + " or more requests. Waiting for processes to finish before processing more.");
+						Thread.sleep(100);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					continue;
 				}
+				
+				
 				final Socket connection = server.getNextConnection();
 				if (connection == null) {
 					try {
@@ -338,11 +362,13 @@ public class Server implements Runnable {
 				}
 				
 				 final ConnectionHandler handler = new ConnectionHandler(this.server, connection);
+				 server.incrementNumProcessingRequests();
 				 new Thread(new Runnable() {
 					@Override
 					public void run() {
 						handler.run();
 						server.decrementNumActiveRequests(connection.getInetAddress().toString());
+						server.decrementNumProcessingRequests();
 					} 
 				 }).start();
 			}
