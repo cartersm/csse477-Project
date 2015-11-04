@@ -53,6 +53,8 @@ public class HttpResponseFactory {
 
 		// Lets add extra header with provider info
 		response.put(Protocol.PROVIDER, Protocol.AUTHOR);
+		
+		response.put(Protocol.ACCESS_CONTROL_ALLOW_ORIGIN, Protocol.ACCESS_CONTROL_ALLOWED_LIST);
 	}
 	
 	/**

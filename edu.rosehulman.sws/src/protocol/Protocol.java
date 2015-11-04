@@ -73,6 +73,8 @@ public class Protocol {
     public static final String LAST_MODIFIED = "Last-Modified";
     public static final String CONTENT_LENGTH = "Content-Length";
     public static final String CONTENT_TYPE = "Content-Type";
+    public static final String ACCESS_CONTROL_ALLOW_ORIGIN = "Access-Control-Allow-Origin";
+
     
     /**
      * A chunk size to be used when reading a file and sending it to a socket. 
@@ -90,6 +92,7 @@ public class Protocol {
     public static final String OPEN = "Keep-Alive";
     public static final String DEFAULT_FILE = "index.html";
     public static final String MIME_TEXT = "text";
+	public static final String ACCESS_CONTROL_ALLOWED_LIST = "*";
     
     /**
      * Returns a formatted String containing server information.<br/>
