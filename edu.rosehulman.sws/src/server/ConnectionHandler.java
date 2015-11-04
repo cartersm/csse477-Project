@@ -84,7 +84,6 @@ public class ConnectionHandler implements Runnable {
 			// Get the end time
 			long end = System.currentTimeMillis();
 			this.server.incrementServiceTime(end - start);
-			this.server.decrementProcessingConnections(1);
 			return;
 		}
 
@@ -129,7 +128,6 @@ public class ConnectionHandler implements Runnable {
 			// Get the end time
 			long end = System.currentTimeMillis();
 			this.server.incrementServiceTime(end - start);
-			this.server.decrementProcessingConnections(1);
 			return;
 		}
 

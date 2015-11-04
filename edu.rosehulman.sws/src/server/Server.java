@@ -50,20 +50,23 @@ public class Server implements Runnable {
 	private long connections;
 	private long serviceTime;
 
-	private Map<String, List<Socket>> activeConnections;
-	private Map<String, List<Socket>> queuedConnections;
-
-	private static final int MAX_PROCESSING_CONNECTIONS = 10;
-	private int numProcessingConnections;
-
-	private List<String> bannedInetAddresses;
-	private static final int MAX_ACTIVE_CONNECTIONS_FOR_USER = 10;
-
 	private WebServer window;
 	private Map<String, AbstractPlugin> plugins;
 
 	private static final int MAX_SIZE_OF_AUDIT_TRAIL = 100;
 	private List<HttpRequest> auditTrail;
+
+	private final Object waitingRequestsLock = new Object();
+	private List<Socket> waitingRequests;
+
+	private final Object bannedUsersLock = new Object();
+	private List<String> bannedUsers;
+	
+	private final Object hadATurnLock = new Object();
+	private List<String> hadATurn;
+
+	private final Object numActiveRequestsLock = new Object();
+	private Map<String, Integer> numActiveRequests;
 
 	/**
 	 * @param rootDirectory
@@ -80,10 +83,11 @@ public class Server implements Runnable {
 		this.window = window;
 		this.plugins = new HashMap<>();
 
-		this.activeConnections = new HashMap<String, List<Socket>>();
-		this.queuedConnections = new HashMap<String, List<Socket>>();
-		this.bannedInetAddresses = new ArrayList<String>();
-		this.numProcessingConnections = 0;
+		this.waitingRequests = new ArrayList<Socket>();
+		this.bannedUsers = new ArrayList<String>();
+		this.numActiveRequests = new HashMap<String, Integer>();
+		this.hadATurn = new ArrayList<String>();
+
 		this.auditTrail = new ArrayList<HttpRequest>();
 
 		PriorityQueueHandler queueHandler = new PriorityQueueHandler(this);
@@ -132,14 +136,6 @@ public class Server implements Runnable {
 		this.connections += value;
 	}
 
-	public synchronized void incrementProcessingConnections(long value) {
-		this.numProcessingConnections += value;
-	}
-
-	public synchronized void decrementProcessingConnections(long value) {
-		this.numProcessingConnections -= value;
-	}
-
 	public synchronized void addToAuditTrail(HttpRequest request) {
 		if (auditTrail.size() >= MAX_SIZE_OF_AUDIT_TRAIL) {
 			auditTrail.remove(0);
@@ -162,6 +158,56 @@ public class Server implements Runnable {
 	 * connection request and creates a {@link ConnectionHandler} for the
 	 * request.
 	 */
+	public synchronized void addWaitingRequest(Socket connection) {
+		synchronized (this.waitingRequestsLock) {
+			this.waitingRequests.add(connection);
+		}
+	}
+
+	public synchronized void removeAllRequests(String inetAddress) {
+		synchronized (this.waitingRequestsLock) {
+			for (int i = 0; i < waitingRequests.size(); i++) {
+				if (this.waitingRequests.get(i).getInetAddress().toString()
+						.equals(inetAddress)) {
+					this.waitingRequests.remove(i);
+					i--;
+				}
+			}
+		}
+	}
+
+	public synchronized void addBanneduser(String inetAddress) {
+		synchronized (this.bannedUsersLock) {
+			this.bannedUsers.add(inetAddress);
+		}
+	}
+
+	public synchronized boolean userIsBanned(String inetAddress) {
+		synchronized (this.bannedUsersLock) {
+			return this.bannedUsers.contains(inetAddress);
+		}
+	}
+
+	public synchronized int getNumActiveRequests(String inetAddress) {
+		synchronized (this.numActiveRequestsLock) {
+			if (this.numActiveRequests.containsKey(inetAddress)) {
+				return this.numActiveRequests.get(inetAddress);
+			}
+			return 0;
+		}
+	}
+
+	public synchronized void incrementNumActiveRequests(String inetAddress) {
+		synchronized (this.numActiveRequestsLock) {
+			if (this.numActiveRequests.containsKey(inetAddress)) {
+				int numActiveRequests = this.numActiveRequests.get(inetAddress);
+				this.numActiveRequests.put(inetAddress, numActiveRequests + 1);
+			} else {
+				this.numActiveRequests.put(inetAddress, 1);
+			}
+		}
+	}
+
 	public void run() {
 		try {
 			this.welcomeSocket = new ServerSocket(port);
@@ -181,36 +227,20 @@ public class Server implements Runnable {
 
 				String inetAddress = connectionSocket.getInetAddress()
 						.toString();
-				System.out.println("Request from " + inetAddress);
-				if (bannedInetAddresses.contains(inetAddress)) {
-					System.out.println("But " + inetAddress + " is banned!");
+
+				if (this.userIsBanned(inetAddress)) {
 					continue;
 				}
 
-				int numConnections = 0;
-				List<Socket> queuedSockets = null;
-				if (queuedConnections.containsKey(inetAddress)) {
-					queuedSockets = queuedConnections.get(inetAddress);
-					numConnections += queuedSockets.size();
-				} else {
-					queuedSockets = new ArrayList<Socket>();
-					queuedConnections.put(inetAddress, queuedSockets);
-				}
-
-				List<Socket> activeSockets = new ArrayList<Socket>();
-				if (activeConnections.containsKey(inetAddress)) {
-					activeSockets = activeConnections.get(inetAddress);
-					numConnections += activeConnections.get(inetAddress).size();
-				}
-
-				if (numConnections + 1 > MAX_ACTIVE_CONNECTIONS_FOR_USER) {
-					this.bannedInetAddresses.add(inetAddress);
-					queuedSockets.clear();
-					activeSockets.clear();
+				int numActiveRequests = this.getNumActiveRequests(inetAddress);
+				if (numActiveRequests > 10) {
+					this.addBanneduser(inetAddress);
+					this.removeAllRequests(inetAddress);
 					continue;
 				}
 
-				queuedSockets.add(connectionSocket);
+				this.incrementNumActiveRequests(inetAddress);
+				this.addWaitingRequest(connectionSocket);
 
 				// ///////////////////////////////////////////////////////////////
 				// Old Code
@@ -252,43 +282,7 @@ public class Server implements Runnable {
 		@Override
 		public void run() {
 			while (true) {
-				for (String key : activeConnections.keySet()) {
-					while (numProcessingConnections > MAX_PROCESSING_CONNECTIONS) {
-						try {
-							Thread.sleep(100);
-						} catch (InterruptedException e) {
-							e.printStackTrace();
-						}
-					}
-					server.incrementProcessingConnections(1);
-
-					List<Socket> activeRequests = activeConnections.get(key);
-
-					Socket connectionToHandle = activeRequests.get(0);
-					// Create a handler for this connection and start the
-					// handler in a new thread
-					ConnectionHandler handler = new ConnectionHandler(server,
-							connectionToHandle);
-					new Thread(handler).start();
-
-					activeRequests.remove(0);
-					if (activeRequests.size() <= 0) {
-						activeConnections.remove(key);
-					}
-				}
-
-				for (String key : queuedConnections.keySet()) {
-					List<Socket> requestsToAdd = queuedConnections.get(key);
-					queuedConnections.remove(key);
-					List<Socket> activeRequests = null;
-					if (activeConnections.containsKey(key)) {
-						activeRequests = activeConnections.get(key);
-					} else {
-						activeRequests = new ArrayList<Socket>();
-						activeConnections.put(key, activeRequests);
-					}
-					activeRequests.addAll(requestsToAdd);
-				}
+				Socket connection = this.getNextConnection();
 			}
 		}
 
