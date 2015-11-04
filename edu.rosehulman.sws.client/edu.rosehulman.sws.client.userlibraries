@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<eclipse-userlibraries>
+  <library name="html5shiv">
+    <archive path="C:/Users/cartersm/.IntelliJIdea14/system/extLibs/http_oss.maxcdn.com_html5shiv_3.7.2_html5shiv.js" />
+  </library>
+  <library name="jquery-1.11.3">
+    <archive path="C:/Users/cartersm/.IntelliJIdea14/system/extLibs/http_code.jquery.com_jquery-1.11.3.js" />
+  </library>
+  <library name="respond">
+    <archive path="C:/Users/cartersm/.IntelliJIdea14/system/extLibs/http_oss.maxcdn.com_respond_1.4.2_respond.min.js" />
+  </library>
+</eclipse-userlibraries>
+
