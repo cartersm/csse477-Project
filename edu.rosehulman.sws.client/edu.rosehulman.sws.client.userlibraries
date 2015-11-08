@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <eclipse-userlibraries>
+  <library name="angularfire">
+    <archive path="C:/Users/cartersm/.IntelliJIdea14/system/extLibs/http_cdn.firebase.com_libs_angularfire_1.1.2_angularfire.js" />
+  </library>
+  <library name="firebase">
+    <archive path="C:/Users/cartersm/.IntelliJIdea14/system/extLibs/http_cdn.firebase.com_js_client_2.2.9_firebase.js" />
+  </library>
   <library name="html5shiv">
     <archive path="C:/Users/cartersm/.IntelliJIdea14/system/extLibs/http_oss.maxcdn.com_html5shiv_3.7.2_html5shiv.js" />
   </library>
