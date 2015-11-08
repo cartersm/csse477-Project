@@ -75,7 +75,7 @@ public abstract class AbstractPlugin {
 	 * Retrieves a Servlet from this Plugin's IServlet map.
 	 * 
 	 */
-	private final IServlet getServlet(String key) throws ServletUndefinedException {
+	protected final IServlet getServlet(String key) throws ServletUndefinedException {
 		final IServlet servlet = this.servlets.get(key);
 		if (servlet == null) {
 			throw new ServletUndefinedException("Servlet \"" + key + "\" does not exist.");
@@ -91,7 +91,7 @@ public abstract class AbstractPlugin {
 	 *             If the given servlet is not found in the map.
 	 * 
 	 */
-	private final IServlet getServletFromUri(final String uri) throws ServletUndefinedException {
+	protected IServlet getServletFromUri(final String uri) throws ServletUndefinedException {
 		final String className = this.getClass().getSimpleName();
 		// the character after the "/" after the plugin name
 		int start = uri.indexOf(className) + className.length() + 1;
@@ -101,5 +101,9 @@ public abstract class AbstractPlugin {
 			return this.defaultServlet;
 		}
 		return getServlet(servletUri);
+	}
+	
+	protected final String getRootDirectory() {
+		return this.rootDirectory;
 	}
 }

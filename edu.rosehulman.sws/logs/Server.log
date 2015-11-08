@@ -195,3 +195,19 @@ dnt: 1
 ------------- Body ---------------
 ----------------------------------
 
+2015-11-06 12:39:34,948 Thread-8 INFO  server.Server - 
+----------- Header ----------------
+GET /BasicPlugin/HelloServlet HTTP/1.1
+if-modified-since: Wed Nov 04 12:21:00 EST 2015
+connection: keep-alive
+accept-language: en-US,en;q=0.8
+host: localhost:8080
+accept: application/json, text/plain, */*
+origin: http://localhost:8000
+user-agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36
+accept-encoding: gzip, deflate, sdch
+referer: http://localhost:8000/app/index.html
+dnt: 1
+------------- Body ---------------
+----------------------------------
+
