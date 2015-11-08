@@ -359,14 +359,14 @@ public class WebServer extends JFrame {
 			AbstractPlugin plugin = (AbstractPlugin) o;
 			for (AbstractPlugin loadedPlugin : this.server.getPlugins().values()) {
 				// if plugin's simple name exists in the map...
-				if (loadedPlugin.getClass().getSimpleName().equals(plugin.getClass().getSimpleName())) {
+				if (loadedPlugin.getUriName().equals(plugin.getUriName())) {
 					// and plugin's fully-qualified name equals that plugin's
 					// fully-qualified name
 					if (loadedPlugin.getClass().getName().equals(plugin.getClass().getName())) {
 						// ... then they are (assumed to be) the same, so
 						// overwrite the existing plugin.
-						System.out.println("Updating plugin " + plugin.getClass().getSimpleName());
-						this.server.addPlugin(plugin.getClass().getSimpleName(), plugin);
+						System.out.println("Updating plugin " + plugin.getUriName());
+						this.server.addPlugin(plugin.getUriName(), plugin);
 						return;
 					} else {
 						// Else, they're different and we have a name clash, so
@@ -375,8 +375,8 @@ public class WebServer extends JFrame {
 					}
 				}
 			}
-			System.out.println("Adding new plugin " + plugin.getClass().getSimpleName());
-			this.server.addPlugin(plugin.getClass().getSimpleName(), plugin);
+			System.out.println("Adding new plugin " + plugin.getUriName());
+			this.server.addPlugin(plugin.getUriName(), plugin);
 		}
 		return;
 	}

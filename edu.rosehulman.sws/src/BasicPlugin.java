@@ -23,4 +23,9 @@ public class BasicPlugin extends AbstractPlugin {
 		return map;
 	}
 
+	@Override
+	public String getUriName() {
+		return "BasicPlugin";
+	}
+
 }

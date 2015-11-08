@@ -69,7 +69,16 @@ public abstract class AbstractPlugin {
 		return HttpResponseFactory.create400BadRequest(Protocol.CLOSE);
 	}
 
+	/**
+	 * Returns a map of URI names to IServlets. The key for an item in the map
+	 * should be the Servlet's name as it appears in the request URI.
+	 */
 	protected abstract Map<String, IServlet> createServlets();
+
+	/**
+	 * Returns the name of this plugin as it will appear in a request URI
+	 */
+	public abstract String getUriName();
 
 	/**
 	 * Retrieves a Servlet from this Plugin's IServlet map.
@@ -92,17 +101,17 @@ public abstract class AbstractPlugin {
 	 * 
 	 */
 	protected IServlet getServletFromUri(final String uri) throws ServletUndefinedException {
-		final String className = this.getClass().getSimpleName();
+		final String className = getUriName();
 		// the character after the "/" after the plugin name
 		int start = uri.indexOf(className) + className.length() + 1;
 
 		String servletUri = uri.substring(start).trim();
-		if (!(servletUri.endsWith("Servlet") || servletUri.endsWith("Servlet/"))) { // it is a file path
+		if (!(servletUri.endsWith("Servlet") || servletUri.endsWith("Servlet/"))) {
 			return this.defaultServlet;
 		}
 		return getServlet(servletUri);
 	}
-	
+
 	protected final String getRootDirectory() {
 		return this.rootDirectory;
 	}

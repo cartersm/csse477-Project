@@ -7,10 +7,8 @@ import protocol.IServlet;
 import protocol.plugin.AbstractPlugin;
 import protocol.plugin.ServletUndefinedException;
 
-// TODO: consider adding a method to get the URI string for a plugin,
-// instead of just throwing them in by simpleName.
-public class GhostbustersDB extends AbstractPlugin {
-	public GhostbustersDB(String rootDirectory) {
+public class GhostbustersDBPlugin extends AbstractPlugin {
+	public GhostbustersDBPlugin(String rootDirectory) {
 		super(rootDirectory);
 	}
 
@@ -37,6 +35,11 @@ public class GhostbustersDB extends AbstractPlugin {
 		servletMap.put("ghosts", new GhostsServlet());
 		servletMap.put("haunts", new HauntsServlet());
 		return null;
+	}
+
+	@Override
+	public String getUriName() {
+		return "GhostbustersDB";
 	}
 
 }
