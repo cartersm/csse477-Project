@@ -1,5 +1,3 @@
-package edu.rosehulman.sws.ghostbustersdb;
-
 import protocol.HttpRequest;
 import protocol.HttpResponse;
 import protocol.HttpResponseFactory;
@@ -10,6 +8,15 @@ public class GhostsServlet implements IServlet {
 	// indices of "/" characters in the expected URI
 	private static final int SLASH_BEFORE_GHOSTS = 18;
 	private static final int SLASH_AFTER_GHOSTS = 24;
+	
+	private static final String GET_ALL_FORMAT = "SELECT * FROM " + DBHelper.GHOSTS_TABLE_NAME;
+	private static final String GET_ONE_FORMAT = "SELECT * FROM " + DBHelper.GHOSTS_TABLE_NAME + " WHERE ID=%d";
+
+	private DBHelper dbHelper;
+
+	public GhostsServlet(DBHelper dbHelper) {
+		this.dbHelper = dbHelper;
+	}
 
 	@Override
 	public HttpResponse doGet(HttpRequest request, String rootDirectory) {

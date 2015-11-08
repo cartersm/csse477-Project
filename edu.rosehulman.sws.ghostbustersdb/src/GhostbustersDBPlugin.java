@@ -1,5 +1,3 @@
-package edu.rosehulman.sws.ghostbustersdb;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -8,8 +6,11 @@ import protocol.plugin.AbstractPlugin;
 import protocol.plugin.ServletUndefinedException;
 
 public class GhostbustersDBPlugin extends AbstractPlugin {
+	private DBHelper dbHelper;
+
 	public GhostbustersDBPlugin(String rootDirectory) {
 		super(rootDirectory);
+		this.dbHelper = new DBHelper();
 	}
 
 	@Override
@@ -32,8 +33,8 @@ public class GhostbustersDBPlugin extends AbstractPlugin {
 	@Override
 	protected Map<String, IServlet> createServlets() {
 		Map<String, IServlet> servletMap = new HashMap<>();
-		servletMap.put("ghosts", new GhostsServlet());
-		servletMap.put("haunts", new HauntsServlet());
+		servletMap.put("ghosts", new GhostsServlet(this.dbHelper));
+		servletMap.put("haunts", new HauntsServlet(this.dbHelper));
 		return null;
 	}
 

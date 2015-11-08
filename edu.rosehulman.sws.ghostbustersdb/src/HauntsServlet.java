@@ -1,5 +1,3 @@
-package edu.rosehulman.sws.ghostbustersdb;
-
 import protocol.HttpRequest;
 import protocol.HttpResponse;
 import protocol.HttpResponseFactory;
@@ -10,6 +8,11 @@ public class HauntsServlet implements IServlet {
 	// indices of "/" characters in the expected URI
 	private static final int SLASH_BEFORE_HAUNTS = 18;
 	private static final int SLASH_AFTER_HAUNTS = 24;
+	private DBHelper dbHelper;
+
+	public HauntsServlet(DBHelper dbHelper) {
+		this.dbHelper = dbHelper;
+	}
 
 	@Override
 	public HttpResponse doGet(HttpRequest request, String rootDirectory) {
