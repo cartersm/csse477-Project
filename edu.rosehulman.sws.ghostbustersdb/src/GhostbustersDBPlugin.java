@@ -35,7 +35,7 @@ public class GhostbustersDBPlugin extends AbstractPlugin {
 		Map<String, IServlet> servletMap = new HashMap<>();
 		servletMap.put("ghosts", new GhostsServlet(this.dbHelper));
 		servletMap.put("haunts", new HauntsServlet(this.dbHelper));
-		return null;
+		return servletMap;
 	}
 
 	@Override

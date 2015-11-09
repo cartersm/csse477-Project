@@ -4,5 +4,7 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7"/>
 	<classpathentry kind="src" path="/edu.rosehulman.sws"/>
 	<classpathentry kind="lib" path="mysql-connector-java-5.1.37-bin.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="/edu.rosehulman.rabbitmq/lib/xstream/jettison-1.2.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
