@@ -156,5 +156,19 @@ public class HttpResponseFactory {
 		fillGeneralHeader(response, connection);
 		
 		return response;	
+	}
+
+	/**
+	 * @param close
+	 * @return
+	 */
+	public static HttpResponse create500InternalServerError(String connection) {
+		HttpResponse response = new HttpResponse(Protocol.VERSION, Protocol.INTERNAL_SERVER_ERROR_CODE, 
+				Protocol.INTERNAL_SERVER_ERROR_TEXT, new HashMap<String, String>(), null);
+		
+		// Lets fill up the header fields with more information
+		fillGeneralHeader(response, connection);
+		
+		return response;
 	}	
 }
