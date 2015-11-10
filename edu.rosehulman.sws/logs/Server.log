@@ -211,3 +211,1348 @@ dnt: 1
 ------------- Body ---------------
 ----------------------------------
 
+2015-11-09 21:44:10,512 Thread-8 INFO  server.Server - 
+----------- Header ----------------
+GET /GhostbustersDB/ghosts HTTP/1.1
+cache-control: no-cache
+connection: keep-alive
+accept-language: en-US,en;q=0.8
+host: localhost:8080
+accept: */*
+postman-token: 3ab337f7-a648-3255-0c45-317f01f20f9a
+user-agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36
+accept-encoding: gzip, deflate, sdch
+dnt: 1
+------------- Body ---------------
+----------------------------------
+
+2015-11-09 21:45:48,914 Thread-8 INFO  server.Server - 
+----------- Header ----------------
+GET /GhostbustersDB/ghosts HTTP/1.1
+cache-control: no-cache
+connection: keep-alive
+accept-language: en-US,en;q=0.8
+host: localhost:8080
+accept: */*
+postman-token: 2629ac84-4337-1b18-46ce-c7f8d00a574f
+user-agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36
+accept-encoding: gzip, deflate, sdch
+dnt: 1
+------------- Body ---------------
+----------------------------------
+
+2015-11-09 21:47:17,041 Thread-8 INFO  server.Server - 
+----------- Header ----------------
+GET /GhostbustersDB/ghosts HTTP/1.1
+cache-control: no-cache
+connection: keep-alive
+accept-language: en-US,en;q=0.8
+host: localhost:8080
+accept: */*
+postman-token: 4853e0f2-e7e1-6690-b1ab-35b1a8efff77
+user-agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36
+accept-encoding: gzip, deflate, sdch
+dnt: 1
+------------- Body ---------------
+----------------------------------
+
+2015-11-09 21:48:01,976 Thread-8 INFO  server.Server - 
+----------- Header ----------------
+GET /GhostbustersDB/ghosts HTTP/1.1
+cache-control: no-cache
+connection: keep-alive
+accept-language: en-US,en;q=0.8
+host: localhost:8080
+accept: */*
+postman-token: b37d7991-13af-70a4-43e2-1619676bb80e
+user-agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36
+accept-encoding: gzip, deflate, sdch
+dnt: 1
+------------- Body ---------------
+----------------------------------
+
+2015-11-09 21:49:50,794 Thread-8 INFO  server.Server - 
+----------- Header ----------------
+GET /GhostbustersDB/ghosts HTTP/1.1
+cache-control: no-cache
+connection: keep-alive
+accept-language: en-US,en;q=0.8
+host: localhost:8080
+accept: */*
+postman-token: 76460f72-ef86-93d3-788f-101dfba1299c
+user-agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36
+accept-encoding: gzip, deflate, sdch
+dnt: 1
+------------- Body ---------------
+----------------------------------
+
+2015-11-09 21:50:08,190 Thread-9 INFO  server.Server - 
+----------- Header ----------------
+GET /v1/GhostbustersDB/ghosts HTTP/1.1
+cache-control: no-cache
+connection: keep-alive
+accept-language: en-US,en;q=0.8
+host: localhost:8080
+accept: */*
+postman-token: 3b3243f0-e169-a3ce-f487-2912d5021e28
+user-agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36
+accept-encoding: gzip, deflate, sdch
+dnt: 1
+------------- Body ---------------
+----------------------------------
+
+2015-11-09 21:51:00,327 Thread-8 INFO  server.Server - 
+----------- Header ----------------
+GET /v1/GhostbustersDB/ghosts HTTP/1.1
+cache-control: no-cache
+connection: keep-alive
+accept-language: en-US,en;q=0.8
+host: localhost:8080
+accept: */*
+postman-token: aabce914-cd90-f3ff-ca1f-967208972446
+user-agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36
+accept-encoding: gzip, deflate, sdch
+dnt: 1
+------------- Body ---------------
+----------------------------------
+
+2015-11-09 21:52:58,405 Thread-8 INFO  server.Server - 
+----------- Header ----------------
+GET /v1/GhostbustersDB/ghosts HTTP/1.1
+cache-control: no-cache
+connection: keep-alive
+accept-language: en-US,en;q=0.8
+host: localhost:8080
+accept: */*
+postman-token: b1a6d9fb-7cb9-6976-b704-d8bb74b3528a
+user-agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36
+accept-encoding: gzip, deflate, sdch
+dnt: 1
+------------- Body ---------------
+----------------------------------
+
+2015-11-09 21:58:15,869 Thread-8 INFO  server.Server - 
+----------- Header ----------------
+GET /v1/GhostbustersDB/ghosts HTTP/1.1
+cache-control: no-cache
+connection: keep-alive
+accept-language: en-US,en;q=0.8
+host: localhost:8080
+accept: */*
+postman-token: bdf062da-49ed-ad08-9dc6-1eaeee2c6758
+user-agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36
+accept-encoding: gzip, deflate, sdch
+dnt: 1
+------------- Body ---------------
+----------------------------------
+
+2015-11-09 22:20:26,695 Thread-8 INFO  server.Server - 
+----------- Header ----------------
+GET /v1/GhostbustersDB/ghosts HTTP/1.1
+cache-control: no-cache
+connection: keep-alive
+accept-language: en-US,en;q=0.8
+host: localhost:8080
+accept: */*
+postman-token: f5dfb553-df4e-7966-4b43-ca30155459b8
+user-agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36
+accept-encoding: gzip, deflate, sdch
+dnt: 1
+------------- Body ---------------
+----------------------------------
+
+2015-11-09 22:34:09,433 Thread-8 INFO  server.Server - 
+----------- Header ----------------
+GET /v1/GhostbustersDB/ghosts HTTP/1.1
+cache-control: no-cache
+connection: keep-alive
+accept-language: en-US,en;q=0.8
+host: localhost:8080
+accept: */*
+postman-token: 46426866-d328-c7e8-8fc7-688154fc8908
+user-agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36
+accept-encoding: gzip, deflate, sdch
+dnt: 1
+------------- Body ---------------
+----------------------------------
+
+2015-11-09 22:37:05,047 Thread-8 INFO  server.Server - 
+----------- Header ----------------
+GET /v1/GhostbustersDB/ghosts HTTP/1.1
+cache-control: no-cache
+connection: keep-alive
+accept-language: en-US,en;q=0.8
+host: localhost:8080
+accept: */*
+postman-token: 40326608-1919-bad0-2c47-a3e7a3700737
+user-agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36
+accept-encoding: gzip, deflate, sdch
+dnt: 1
+------------- Body ---------------
+----------------------------------
+
+2015-11-09 22:40:45,664 Thread-8 INFO  server.Server - 
+----------- Header ----------------
+GET /v1/GhostbustersDB/ghosts HTTP/1.1
+cache-control: no-cache
+connection: keep-alive
+accept-language: en-US,en;q=0.8
+host: localhost:8080
+accept: */*
+postman-token: 7d07beab-d1df-5c46-03d1-e331061af9ad
+user-agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36
+accept-encoding: gzip, deflate, sdch
+dnt: 1
+------------- Body ---------------
+----------------------------------
+
+2015-11-09 22:42:44,079 Thread-8 INFO  server.Server - 
+----------- Header ----------------
+GET /v1/GhostbustersDB/ghosts HTTP/1.1
+cache-control: no-cache
+connection: keep-alive
+accept-language: en-US,en;q=0.8
+host: localhost:8080
+accept: */*
+postman-token: 9d67d7f7-816f-331c-c1a4-1a878548fc3c
+user-agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36
+accept-encoding: gzip, deflate, sdch
+dnt: 1
+------------- Body ---------------
+----------------------------------
+
+2015-11-09 22:45:01,958 Thread-8 INFO  server.Server - 
+----------- Header ----------------
+GET /v1/GhostbustersDB/ghosts HTTP/1.1
+cache-control: no-cache
+connection: keep-alive
+accept-language: en-US,en;q=0.8
+host: localhost:8080
+accept: */*
+postman-token: f9294d83-64d6-ed47-7a3f-025979e09ee5
+user-agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36
+accept-encoding: gzip, deflate, sdch
+dnt: 1
+------------- Body ---------------
+----------------------------------
+
+2015-11-09 22:45:36,163 Thread-8 INFO  server.Server - 
+----------- Header ----------------
+GET /v1/GhostbustersDB/ghosts HTTP/1.1
+cache-control: no-cache
+connection: keep-alive
+accept-language: en-US,en;q=0.8
+host: localhost:8080
+accept: */*
+postman-token: 65ca043b-0f5b-7c44-0171-a6be9a09d3bd
+user-agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36
+accept-encoding: gzip, deflate, sdch
+dnt: 1
+------------- Body ---------------
+----------------------------------
+
+2015-11-09 22:48:15,042 Thread-8 INFO  server.Server - 
+----------- Header ----------------
+GET /v1/GhostbustersDB/ghosts HTTP/1.1
+cache-control: no-cache
+connection: keep-alive
+accept-language: en-US,en;q=0.8
+host: localhost:8080
+accept: */*
+postman-token: 6f5a9935-7168-54d6-1727-b4193f1cf794
+user-agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36
+accept-encoding: gzip, deflate, sdch
+dnt: 1
+------------- Body ---------------
+----------------------------------
+
+2015-11-09 22:51:46,968 Thread-8 INFO  server.Server - 
+----------- Header ----------------
+GET /v1/GhostbustersDB/ghosts HTTP/1.1
+cache-control: no-cache
+connection: keep-alive
+accept-language: en-US,en;q=0.8
+host: localhost:8080
+accept: */*
+postman-token: f9a2cbbe-c451-b8db-861c-7ae3046f6381
+user-agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36
+accept-encoding: gzip, deflate, sdch
+dnt: 1
+------------- Body ---------------
+----------------------------------
+
+2015-11-09 22:52:18,734 Thread-8 INFO  server.Server - 
+----------- Header ----------------
+GET /v1/GhostbustersDB/ghosts HTTP/1.1
+cache-control: no-cache
+connection: keep-alive
+accept-language: en-US,en;q=0.8
+host: localhost:8080
+accept: */*
+postman-token: 4e36965b-929e-5d41-0044-cee024524026
+user-agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36
+accept-encoding: gzip, deflate, sdch
+dnt: 1
+------------- Body ---------------
+----------------------------------
+
+2015-11-09 22:53:59,252 Thread-9 INFO  server.Server - 
+----------- Header ----------------
+POST /v1/GhostbustersDB/ghosts HTTP/1.1
+content-type: text/plain;charset=UTF-8
+cache-control: no-cache
+connection: keep-alive
+accept-language: en-US,en;q=0.8
+host: localhost:8080
+accept: */*
+content-length: 80
+postman-token: 52cc8b5b-d9e1-4b04-8fa9-05412f741d4a
+origin: chrome-extension://fhbjgbiflinjbdggehcddcbncdddomop
+user-agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36
+accept-encoding: gzip, deflate
+dnt: 1
+------------- Body ---------------
+{
+    "name": "Stay-Puft Marshmallow Man",
+    "type": "Demonic Manifestation"
+}----------------------------------
+
+2015-11-09 22:54:13,509 Thread-10 INFO  server.Server - 
+----------- Header ----------------
+POST /v1/GhostbustersDB/ghosts HTTP/1.1
+content-type: text/plain;charset=UTF-8
+cache-control: no-cache
+connection: keep-alive
+accept-language: en-US,en;q=0.8
+host: localhost:8080
+accept: */*
+content-length: 81
+postman-token: ed056f2a-8141-6e83-71d9-5fa556387660
+origin: chrome-extension://fhbjgbiflinjbdggehcddcbncdddomop
+user-agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36
+accept-encoding: gzip, deflate
+dnt: 1
+------------- Body ---------------
+{
+    "name": "Stay-Puft Marshmallow Man",
+    "type": "Demonic Manifestation"
+}
+----------------------------------
+
+2015-11-09 23:08:02,934 Thread-8 INFO  server.Server - 
+----------- Header ----------------
+GET /v1/GhostbustersDB/ghosts HTTP/1.1
+cache-control: no-cache
+connection: keep-alive
+accept-language: en-US,en;q=0.8
+host: localhost:8080
+accept: */*
+postman-token: f73df6fc-4c4c-d49b-d197-935f867b9365
+user-agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36
+accept-encoding: gzip, deflate, sdch
+dnt: 1
+------------- Body ---------------
+----------------------------------
+
+2015-11-09 23:08:09,697 Thread-9 INFO  server.Server - 
+----------- Header ----------------
+POST /v1/GhostbustersDB/ghosts HTTP/1.1
+content-type: text/plain;charset=UTF-8
+cache-control: no-cache
+connection: keep-alive
+accept-language: en-US,en;q=0.8
+host: localhost:8080
+accept: */*
+content-length: 81
+postman-token: 3dc716f5-ec45-69f6-0cb4-ca7fc0101e95
+origin: chrome-extension://fhbjgbiflinjbdggehcddcbncdddomop
+user-agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36
+accept-encoding: gzip, deflate
+dnt: 1
+------------- Body ---------------
+{
+    "name": "Stay-Puft Marshmallow Man",
+    "type": "Demonic Manifestation"
+}
+----------------------------------
+
+2015-11-09 23:08:50,331 Thread-8 INFO  server.Server - 
+----------- Header ----------------
+GET /v1/GhostbustersDB/ghosts HTTP/1.1
+cache-control: no-cache
+connection: keep-alive
+accept-language: en-US,en;q=0.8
+host: localhost:8080
+accept: */*
+postman-token: d5614108-5c24-815c-d6e1-fe441455407a
+user-agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36
+accept-encoding: gzip, deflate, sdch
+dnt: 1
+------------- Body ---------------
+----------------------------------
+
+2015-11-09 23:08:54,027 Thread-9 INFO  server.Server - 
+----------- Header ----------------
+POST /v1/GhostbustersDB/ghosts HTTP/1.1
+content-type: text/plain;charset=UTF-8
+cache-control: no-cache
+connection: keep-alive
+accept-language: en-US,en;q=0.8
+host: localhost:8080
+accept: */*
+content-length: 81
+postman-token: 8292174b-a826-aabc-f30a-594436151395
+origin: chrome-extension://fhbjgbiflinjbdggehcddcbncdddomop
+user-agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36
+accept-encoding: gzip, deflate
+dnt: 1
+------------- Body ---------------
+{
+    "name": "Stay-Puft Marshmallow Man",
+    "type": "Demonic Manifestation"
+}
+----------------------------------
+
+2015-11-09 23:08:58,479 Thread-10 INFO  server.Server - 
+----------- Header ----------------
+GET /v1/GhostbustersDB/ghosts HTTP/1.1
+cache-control: no-cache
+connection: keep-alive
+accept-language: en-US,en;q=0.8
+host: localhost:8080
+accept: */*
+postman-token: d35d5292-a0e2-03d3-82ed-10e3778f7e17
+user-agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36
+accept-encoding: gzip, deflate, sdch
+dnt: 1
+------------- Body ---------------
+----------------------------------
+
+2015-11-09 23:10:07,617 Thread-8 INFO  server.Server - 
+----------- Header ----------------
+GET /v1/GhostbustersDB/ghosts HTTP/1.1
+cache-control: no-cache
+connection: keep-alive
+accept-language: en-US,en;q=0.8
+host: localhost:8080
+accept: */*
+postman-token: a372a627-3bb9-6d34-34c6-ef1f47d6a3bd
+user-agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36
+accept-encoding: gzip, deflate, sdch
+dnt: 1
+------------- Body ---------------
+----------------------------------
+
+2015-11-09 23:10:11,903 Thread-9 INFO  server.Server - 
+----------- Header ----------------
+POST /v1/GhostbustersDB/ghosts HTTP/1.1
+content-type: text/plain;charset=UTF-8
+cache-control: no-cache
+connection: keep-alive
+accept-language: en-US,en;q=0.8
+host: localhost:8080
+accept: */*
+content-length: 81
+postman-token: 0b2231ee-8b54-e3d4-036c-3f1620659ac1
+origin: chrome-extension://fhbjgbiflinjbdggehcddcbncdddomop
+user-agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36
+accept-encoding: gzip, deflate
+dnt: 1
+------------- Body ---------------
+{
+    "name": "Stay-Puft Marshmallow Man",
+    "type": "Demonic Manifestation"
+}
+----------------------------------
+
+2015-11-09 23:10:14,390 Thread-10 INFO  server.Server - 
+----------- Header ----------------
+GET /v1/GhostbustersDB/ghosts HTTP/1.1
+cache-control: no-cache
+connection: keep-alive
+accept-language: en-US,en;q=0.8
+host: localhost:8080
+accept: */*
+postman-token: 181522e8-7650-bffa-f9f8-6d608405363d
+user-agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36
+accept-encoding: gzip, deflate, sdch
+dnt: 1
+------------- Body ---------------
+----------------------------------
+
+2015-11-09 23:10:34,425 Thread-11 INFO  server.Server - 
+----------- Header ----------------
+PUT /v1/GhostbustersDB/ghosts/1 HTTP/1.1
+content-type: text/plain;charset=UTF-8
+cache-control: no-cache
+connection: keep-alive
+accept-language: en-US,en;q=0.8
+host: localhost:8080
+accept: */*
+content-length: 69
+postman-token: b3a2ae23-9675-d42e-e928-598fd5972985
+origin: chrome-extension://fhbjgbiflinjbdggehcddcbncdddomop
+user-agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36
+accept-encoding: gzip, deflate, sdch
+dnt: 1
+------------- Body ---------------
+{
+    "name": "Stay-Puft Marshmallow Man",
+    "type": "Dough Boy"
+}
+----------------------------------
+
+2015-11-09 23:12:31,169 Thread-8 INFO  server.Server - 
+----------- Header ----------------
+GET /v1/GhostbustersDB/ghosts HTTP/1.1
+cache-control: no-cache
+connection: keep-alive
+accept-language: en-US,en;q=0.8
+host: localhost:8080
+accept: */*
+postman-token: c9471809-013e-8341-2c45-07c26d8acf6e
+user-agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36
+accept-encoding: gzip, deflate, sdch
+dnt: 1
+------------- Body ---------------
+----------------------------------
+
+2015-11-09 23:12:36,446 Thread-9 INFO  server.Server - 
+----------- Header ----------------
+PUT /v1/GhostbustersDB/ghosts/1 HTTP/1.1
+content-type: text/plain;charset=UTF-8
+cache-control: no-cache
+connection: keep-alive
+accept-language: en-US,en;q=0.8
+host: localhost:8080
+accept: */*
+content-length: 69
+postman-token: 43f7f264-91aa-55bb-206d-d46cd753721a
+origin: chrome-extension://fhbjgbiflinjbdggehcddcbncdddomop
+user-agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36
+accept-encoding: gzip, deflate, sdch
+dnt: 1
+------------- Body ---------------
+{
+    "name": "Stay-Puft Marshmallow Man",
+    "type": "Dough Boy"
+}
+----------------------------------
+
+2015-11-09 23:13:33,125 Thread-8 INFO  server.Server - 
+----------- Header ----------------
+GET /v1/GhostbustersDB/ghosts HTTP/1.1
+cache-control: no-cache
+connection: keep-alive
+accept-language: en-US,en;q=0.8
+host: localhost:8080
+accept: */*
+postman-token: 5ba999e8-aae7-c399-10c2-752c6584d6f4
+user-agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36
+accept-encoding: gzip, deflate, sdch
+dnt: 1
+------------- Body ---------------
+----------------------------------
+
+2015-11-09 23:13:44,344 Thread-9 INFO  server.Server - 
+----------- Header ----------------
+GET /v1/GhostbustersDB/ghosts HTTP/1.1
+cache-control: no-cache
+connection: keep-alive
+accept-language: en-US,en;q=0.8
+host: localhost:8080
+accept: */*
+postman-token: 98983ac7-d57d-f9e1-1f69-79ddd39a29b2
+user-agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36
+accept-encoding: gzip, deflate, sdch
+dnt: 1
+------------- Body ---------------
+----------------------------------
+
+2015-11-09 23:13:48,746 Thread-10 INFO  server.Server - 
+----------- Header ----------------
+PUT /v1/GhostbustersDB/ghosts/1 HTTP/1.1
+content-type: text/plain;charset=UTF-8
+cache-control: no-cache
+connection: keep-alive
+accept-language: en-US,en;q=0.8
+host: localhost:8080
+accept: */*
+content-length: 69
+postman-token: 62eebfee-a77b-cda7-35d5-981a85fb5db2
+origin: chrome-extension://fhbjgbiflinjbdggehcddcbncdddomop
+user-agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36
+accept-encoding: gzip, deflate, sdch
+dnt: 1
+------------- Body ---------------
+{
+    "name": "Stay-Puft Marshmallow Man",
+    "type": "Dough Boy"
+}
+----------------------------------
+
+2015-11-09 23:14:59,271 Thread-8 INFO  server.Server - 
+----------- Header ----------------
+POST /v1/GhostbustersDB/ghosts HTTP/1.1
+content-type: text/plain;charset=UTF-8
+cache-control: no-cache
+connection: keep-alive
+accept-language: en-US,en;q=0.8
+host: localhost:8080
+accept: */*
+content-length: 81
+postman-token: dc733119-2b64-0a7a-e85c-0269ff0b9963
+origin: chrome-extension://fhbjgbiflinjbdggehcddcbncdddomop
+user-agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36
+accept-encoding: gzip, deflate
+dnt: 1
+------------- Body ---------------
+{
+    "name": "Stay-Puft Marshmallow Man",
+    "type": "Demonic Manifestation"
+}
+----------------------------------
+
+2015-11-09 23:15:04,114 Thread-9 INFO  server.Server - 
+----------- Header ----------------
+GET /v1/GhostbustersDB/ghosts HTTP/1.1
+cache-control: no-cache
+connection: keep-alive
+accept-language: en-US,en;q=0.8
+host: localhost:8080
+accept: */*
+postman-token: dc51efd9-a1da-69a8-82b7-51b330e056ba
+user-agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36
+accept-encoding: gzip, deflate, sdch
+dnt: 1
+------------- Body ---------------
+----------------------------------
+
+2015-11-09 23:15:08,148 Thread-10 INFO  server.Server - 
+----------- Header ----------------
+PUT /v1/GhostbustersDB/ghosts/1 HTTP/1.1
+content-type: text/plain;charset=UTF-8
+cache-control: no-cache
+connection: keep-alive
+accept-language: en-US,en;q=0.8
+host: localhost:8080
+accept: */*
+content-length: 69
+postman-token: 192787ff-307d-2920-7917-5d32d8cc094b
+origin: chrome-extension://fhbjgbiflinjbdggehcddcbncdddomop
+user-agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36
+accept-encoding: gzip, deflate, sdch
+dnt: 1
+------------- Body ---------------
+{
+    "name": "Stay-Puft Marshmallow Man",
+    "type": "Dough Boy"
+}
+----------------------------------
+
+2015-11-09 23:16:22,033 Thread-8 INFO  server.Server - 
+----------- Header ----------------
+GET /v1/GhostbustersDB/ghosts HTTP/1.1
+cache-control: no-cache
+connection: keep-alive
+accept-language: en-US,en;q=0.8
+host: localhost:8080
+accept: */*
+postman-token: a12f47f1-fbe6-349e-1531-8f88e244f8b4
+user-agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36
+accept-encoding: gzip, deflate, sdch
+dnt: 1
+------------- Body ---------------
+----------------------------------
+
+2015-11-09 23:16:27,354 Thread-9 INFO  server.Server - 
+----------- Header ----------------
+PUT /v1/GhostbustersDB/ghosts/1 HTTP/1.1
+content-type: text/plain;charset=UTF-8
+cache-control: no-cache
+connection: keep-alive
+accept-language: en-US,en;q=0.8
+host: localhost:8080
+accept: */*
+content-length: 69
+postman-token: c9bec8a7-1942-1d90-1ad3-40cca7094db1
+origin: chrome-extension://fhbjgbiflinjbdggehcddcbncdddomop
+user-agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36
+accept-encoding: gzip, deflate, sdch
+dnt: 1
+------------- Body ---------------
+{
+    "name": "Stay-Puft Marshmallow Man",
+    "type": "Dough Boy"
+}
+----------------------------------
+
+2015-11-09 23:16:31,190 Thread-10 INFO  server.Server - 
+----------- Header ----------------
+GET /v1/GhostbustersDB/ghosts HTTP/1.1
+cache-control: no-cache
+connection: keep-alive
+accept-language: en-US,en;q=0.8
+host: localhost:8080
+accept: */*
+postman-token: ba605a15-a64c-5570-83e0-01c1ab3655af
+user-agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36
+accept-encoding: gzip, deflate, sdch
+dnt: 1
+------------- Body ---------------
+----------------------------------
+
+2015-11-09 23:16:41,329 Thread-11 INFO  server.Server - 
+----------- Header ----------------
+DELETE /v1/GhostbustersDB/ghosts/1 HTTP/1.1
+cache-control: no-cache
+connection: keep-alive
+accept-language: en-US,en;q=0.8
+host: localhost:8080
+accept: */*
+postman-token: 1e871b82-6642-03ed-99f8-f9a446d36558
+origin: chrome-extension://fhbjgbiflinjbdggehcddcbncdddomop
+user-agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36
+accept-encoding: gzip, deflate, sdch
+dnt: 1
+------------- Body ---------------
+----------------------------------
+
+2015-11-09 23:16:44,984 Thread-12 INFO  server.Server - 
+----------- Header ----------------
+GET /v1/GhostbustersDB/ghosts HTTP/1.1
+cache-control: no-cache
+connection: keep-alive
+accept-language: en-US,en;q=0.8
+host: localhost:8080
+accept: */*
+postman-token: f8b6e3b5-9a32-2c21-269a-be50b0feb57f
+user-agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36
+accept-encoding: gzip, deflate, sdch
+dnt: 1
+------------- Body ---------------
+----------------------------------
+
+2015-11-10 11:47:46,706 Thread-8 INFO  server.Server - 
+----------- Header ----------------
+GET /v1/GhostbustersDB/ghosts HTTP/1.1
+cache-control: no-cache
+connection: keep-alive
+accept-language: en-US,en;q=0.8
+host: localhost:8080
+accept: */*
+postman-token: da9b755e-5e88-eeba-89ed-5383da3c44c1
+user-agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36
+accept-encoding: gzip, deflate, sdch
+dnt: 1
+------------- Body ---------------
+----------------------------------
+
+2015-11-10 11:47:54,343 Thread-9 INFO  server.Server - 
+----------- Header ----------------
+POST /v1/GhostbustersDB/ghosts HTTP/1.1
+content-type: text/plain;charset=UTF-8
+cache-control: no-cache
+connection: keep-alive
+accept-language: en-US,en;q=0.8
+host: localhost:8080
+accept: */*
+content-length: 81
+postman-token: 39d0cc5e-944b-7273-c836-eab02eb489e9
+origin: chrome-extension://fhbjgbiflinjbdggehcddcbncdddomop
+user-agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36
+accept-encoding: gzip, deflate
+dnt: 1
+------------- Body ---------------
+{
+    "name": "Stay-Puft Marshmallow Man",
+    "type": "Demonic Manifestation"
+}
+----------------------------------
+
+2015-11-10 11:47:59,042 Thread-10 INFO  server.Server - 
+----------- Header ----------------
+GET /v1/GhostbustersDB/ghosts HTTP/1.1
+cache-control: no-cache
+connection: keep-alive
+accept-language: en-US,en;q=0.8
+host: localhost:8080
+accept: */*
+postman-token: 7ec6d998-3230-ec7d-d984-cfc7ed598b67
+user-agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36
+accept-encoding: gzip, deflate, sdch
+dnt: 1
+------------- Body ---------------
+----------------------------------
+
+2015-11-10 11:48:04,910 Thread-11 INFO  server.Server - 
+----------- Header ----------------
+PUT /v1/GhostbustersDB/ghosts/1 HTTP/1.1
+content-type: text/plain;charset=UTF-8
+cache-control: no-cache
+connection: keep-alive
+accept-language: en-US,en;q=0.8
+host: localhost:8080
+accept: */*
+content-length: 69
+postman-token: 6d5c603f-b328-05aa-1c56-b2838e15fc22
+origin: chrome-extension://fhbjgbiflinjbdggehcddcbncdddomop
+user-agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36
+accept-encoding: gzip, deflate, sdch
+dnt: 1
+------------- Body ---------------
+{
+    "name": "Stay-Puft Marshmallow Man",
+    "type": "Dough Boy"
+}
+----------------------------------
+
+2015-11-10 11:48:10,185 Thread-12 INFO  server.Server - 
+----------- Header ----------------
+GET /v1/GhostbustersDB/ghosts HTTP/1.1
+cache-control: no-cache
+connection: keep-alive
+accept-language: en-US,en;q=0.8
+host: localhost:8080
+accept: */*
+postman-token: 3ad047f1-dfbc-9e92-4c49-e8fea62061d9
+user-agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36
+accept-encoding: gzip, deflate, sdch
+dnt: 1
+------------- Body ---------------
+----------------------------------
+
+2015-11-10 11:48:19,673 Thread-13 INFO  server.Server - 
+----------- Header ----------------
+GET /v1/GhostbustersDB/ghosts HTTP/1.1
+cache-control: no-cache
+connection: keep-alive
+accept-language: en-US,en;q=0.8
+host: localhost:8080
+accept: */*
+postman-token: cf35c0c1-d1ef-c3b9-e93f-a8ead0b7e71a
+user-agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36
+accept-encoding: gzip, deflate, sdch
+dnt: 1
+------------- Body ---------------
+----------------------------------
+
+2015-11-10 11:48:34,432 Thread-14 INFO  server.Server - 
+----------- Header ----------------
+PUT /v1/GhostbustersDB/ghosts/2 HTTP/1.1
+content-type: text/plain;charset=UTF-8
+cache-control: no-cache
+connection: keep-alive
+accept-language: en-US,en;q=0.8
+host: localhost:8080
+accept: */*
+content-length: 69
+postman-token: dceb3042-0523-d451-6237-780bb1bfbb18
+origin: chrome-extension://fhbjgbiflinjbdggehcddcbncdddomop
+user-agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36
+accept-encoding: gzip, deflate, sdch
+dnt: 1
+------------- Body ---------------
+{
+    "name": "Stay-Puft Marshmallow Man",
+    "type": "Dough Boy"
+}
+----------------------------------
+
+2015-11-10 11:51:07,537 Thread-8 INFO  server.Server - 
+----------- Header ----------------
+GET /v1/GhostbustersDB/ghosts HTTP/1.1
+cache-control: no-cache
+connection: keep-alive
+accept-language: en-US,en;q=0.8
+host: localhost:8080
+accept: */*
+postman-token: 3fb3626d-2a5c-769c-aaaf-51d3099fb2d5
+user-agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36
+accept-encoding: gzip, deflate, sdch
+dnt: 1
+------------- Body ---------------
+----------------------------------
+
+2015-11-10 11:51:17,534 Thread-9 INFO  server.Server - 
+----------- Header ----------------
+PUT /v1/GhostbustersDB/ghosts/1 HTTP/1.1
+content-type: text/plain;charset=UTF-8
+cache-control: no-cache
+connection: keep-alive
+accept-language: en-US,en;q=0.8
+host: localhost:8080
+accept: */*
+content-length: 69
+postman-token: f5913136-2cc3-9b54-c268-236baf76b272
+origin: chrome-extension://fhbjgbiflinjbdggehcddcbncdddomop
+user-agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36
+accept-encoding: gzip, deflate, sdch
+dnt: 1
+------------- Body ---------------
+{
+    "name": "Stay-Puft Marshmallow Man",
+    "type": "Dough Boy"
+}
+----------------------------------
+
+2015-11-10 11:51:28,109 Thread-10 INFO  server.Server - 
+----------- Header ----------------
+PUT /v1/GhostbustersDB/ghosts/1 HTTP/1.1
+content-type: text/plain;charset=UTF-8
+cache-control: no-cache
+connection: keep-alive
+accept-language: en-US,en;q=0.8
+host: localhost:8080
+accept: */*
+content-length: 81
+postman-token: 3a846821-d447-bd27-2b28-af3a32cb856f
+origin: chrome-extension://fhbjgbiflinjbdggehcddcbncdddomop
+user-agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36
+accept-encoding: gzip, deflate, sdch
+dnt: 1
+------------- Body ---------------
+{
+    "name": "Stay-Puft Marshmallow Man",
+    "type": "Demonic Manifestation"
+}
+----------------------------------
+
+2015-11-10 11:51:33,248 Thread-11 INFO  server.Server - 
+----------- Header ----------------
+PUT /v1/GhostbustersDB/ghosts/2 HTTP/1.1
+content-type: text/plain;charset=UTF-8
+cache-control: no-cache
+connection: keep-alive
+accept-language: en-US,en;q=0.8
+host: localhost:8080
+accept: */*
+content-length: 81
+postman-token: de127440-b098-914b-20cf-daeb5c00c43a
+origin: chrome-extension://fhbjgbiflinjbdggehcddcbncdddomop
+user-agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36
+accept-encoding: gzip, deflate, sdch
+dnt: 1
+------------- Body ---------------
+{
+    "name": "Stay-Puft Marshmallow Man",
+    "type": "Demonic Manifestation"
+}
+----------------------------------
+
+2015-11-10 11:51:36,869 Thread-12 INFO  server.Server - 
+----------- Header ----------------
+GET /v1/GhostbustersDB/ghosts HTTP/1.1
+cache-control: no-cache
+connection: keep-alive
+accept-language: en-US,en;q=0.8
+host: localhost:8080
+accept: */*
+postman-token: cfcf19cf-ea1e-d3fd-851e-a1362dd38f04
+user-agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36
+accept-encoding: gzip, deflate, sdch
+dnt: 1
+------------- Body ---------------
+----------------------------------
+
+2015-11-10 11:51:43,832 Thread-13 INFO  server.Server - 
+----------- Header ----------------
+DELETE /v1/GhostbustersDB/ghosts/1 HTTP/1.1
+cache-control: no-cache
+connection: keep-alive
+accept-language: en-US,en;q=0.8
+host: localhost:8080
+accept: */*
+postman-token: 5f68a930-ecdf-f05d-f720-31e0f23dd1ee
+origin: chrome-extension://fhbjgbiflinjbdggehcddcbncdddomop
+user-agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36
+accept-encoding: gzip, deflate, sdch
+dnt: 1
+------------- Body ---------------
+----------------------------------
+
+2015-11-10 11:51:48,468 Thread-14 INFO  server.Server - 
+----------- Header ----------------
+DELETE /v1/GhostbustersDB/ghosts/2 HTTP/1.1
+cache-control: no-cache
+connection: keep-alive
+accept-language: en-US,en;q=0.8
+host: localhost:8080
+accept: */*
+postman-token: c9b1199b-9a17-86ed-f23a-160a76f0c130
+origin: chrome-extension://fhbjgbiflinjbdggehcddcbncdddomop
+user-agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36
+accept-encoding: gzip, deflate, sdch
+dnt: 1
+------------- Body ---------------
+----------------------------------
+
+2015-11-10 11:51:53,198 Thread-15 INFO  server.Server - 
+----------- Header ----------------
+GET /v1/GhostbustersDB/ghosts HTTP/1.1
+cache-control: no-cache
+connection: keep-alive
+accept-language: en-US,en;q=0.8
+host: localhost:8080
+accept: */*
+postman-token: 9335e884-2937-ff9a-fb82-e42d9e8746c8
+user-agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36
+accept-encoding: gzip, deflate, sdch
+dnt: 1
+------------- Body ---------------
+----------------------------------
+
+2015-11-10 11:52:05,625 Thread-16 INFO  server.Server - 
+----------- Header ----------------
+POST /v1/GhostbustersDB/ghosts HTTP/1.1
+content-type: text/plain;charset=UTF-8
+cache-control: no-cache
+connection: keep-alive
+accept-language: en-US,en;q=0.8
+host: localhost:8080
+accept: */*
+content-length: 81
+postman-token: 846aedaf-1f9f-51b6-e8e7-53bca2dbf323
+origin: chrome-extension://fhbjgbiflinjbdggehcddcbncdddomop
+user-agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36
+accept-encoding: gzip, deflate
+dnt: 1
+------------- Body ---------------
+{
+    "name": "Stay-Puft Marshmallow Man",
+    "type": "Demonic Manifestation"
+}
+----------------------------------
+
+2015-11-10 11:52:21,462 Thread-17 INFO  server.Server - 
+----------- Header ----------------
+POST /v1/GhostbustersDB/ghosts HTTP/1.1
+content-type: text/plain;charset=UTF-8
+cache-control: no-cache
+connection: keep-alive
+accept-language: en-US,en;q=0.8
+host: localhost:8080
+accept: */*
+content-length: 57
+postman-token: acce95b7-8e2c-4818-b16d-1eab204a243c
+origin: chrome-extension://fhbjgbiflinjbdggehcddcbncdddomop
+user-agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36
+accept-encoding: gzip, deflate
+dnt: 1
+------------- Body ---------------
+{
+    "name": "Boogieman",
+    "type": "Creepy Crawly"
+}
+----------------------------------
+
+2015-11-10 12:03:32,720 Thread-8 INFO  server.Server - 
+----------- Header ----------------
+GET /v1/GhostbustersDB/ghosts HTTP/1.1
+cache-control: no-cache
+connection: keep-alive
+accept-language: en-US,en;q=0.8
+host: localhost:8080
+accept: */*
+postman-token: b2c06433-3117-7d73-66eb-9d7df60685e7
+user-agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36
+accept-encoding: gzip, deflate, sdch
+dnt: 1
+------------- Body ---------------
+----------------------------------
+
+2015-11-10 12:04:02,800 Thread-9 INFO  server.Server - 
+----------- Header ----------------
+DELETE /v1/GhostbustersDB/ghosts/3 HTTP/1.1
+cache-control: no-cache
+connection: keep-alive
+accept-language: en-US,en;q=0.8
+host: localhost:8080
+accept: */*
+postman-token: 4fed5f95-e603-c195-2b4d-de58a5b908a9
+origin: chrome-extension://fhbjgbiflinjbdggehcddcbncdddomop
+user-agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36
+accept-encoding: gzip, deflate, sdch
+dnt: 1
+------------- Body ---------------
+----------------------------------
+
+2015-11-10 12:04:05,919 Thread-10 INFO  server.Server - 
+----------- Header ----------------
+GET /v1/GhostbustersDB/ghosts HTTP/1.1
+cache-control: no-cache
+connection: keep-alive
+accept-language: en-US,en;q=0.8
+host: localhost:8080
+accept: */*
+postman-token: 8ee0cf64-9c46-8322-cf9a-743f662fe22d
+user-agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36
+accept-encoding: gzip, deflate, sdch
+dnt: 1
+------------- Body ---------------
+----------------------------------
+
+2015-11-10 12:06:31,906 Thread-11 INFO  server.Server - 
+----------- Header ----------------
+GET /v1/GhostbustersDB/ghosts HTTP/1.1
+cache-control: no-cache
+connection: keep-alive
+accept-language: en-US,en;q=0.8
+host: localhost:8080
+accept: */*
+postman-token: d1b72b69-96d0-b951-f04b-f5351ce13224
+user-agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36
+accept-encoding: gzip, deflate, sdch
+dnt: 1
+------------- Body ---------------
+----------------------------------
+
+2015-11-10 12:06:56,207 Thread-8 INFO  server.Server - 
+----------- Header ----------------
+GET /v1/GhostbustersDB/ghosts HTTP/1.1
+cache-control: no-cache
+connection: keep-alive
+accept-language: en-US,en;q=0.8
+host: localhost:8080
+accept: */*
+postman-token: 28c562d1-a705-3d55-c679-6edd47903e60
+user-agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36
+accept-encoding: gzip, deflate, sdch
+dnt: 1
+------------- Body ---------------
+----------------------------------
+
+2015-11-10 12:08:52,492 Thread-9 INFO  server.Server - 
+----------- Header ----------------
+GET /v1/GhostbustersDB/ghosts HTTP/1.1
+cache-control: no-cache
+connection: keep-alive
+accept-language: en-US,en;q=0.8
+host: localhost:8080
+accept: */*
+postman-token: cd61f6f4-0d58-0fc1-8e9a-668178a92ad1
+user-agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36
+accept-encoding: gzip, deflate, sdch
+dnt: 1
+------------- Body ---------------
+----------------------------------
+
+2015-11-10 12:09:29,611 Thread-8 INFO  server.Server - 
+----------- Header ----------------
+GET /v1/GhostbustersDB/ghosts HTTP/1.1
+cache-control: no-cache
+connection: keep-alive
+accept-language: en-US,en;q=0.8
+host: localhost:8080
+accept: */*
+postman-token: 303289a9-69e0-e41f-9c72-a3be7aae77d0
+user-agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36
+accept-encoding: gzip, deflate, sdch
+dnt: 1
+------------- Body ---------------
+----------------------------------
+
+2015-11-10 12:10:16,334 Thread-9 INFO  server.Server - 
+----------- Header ----------------
+GET /v1/GhostbustersDB/ghosts/4 HTTP/1.1
+cache-control: no-cache
+connection: keep-alive
+accept-language: en-US,en;q=0.8
+host: localhost:8080
+accept: */*
+postman-token: 1e12e717-9e27-de55-f208-6c9a08c2ed3d
+user-agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36
+accept-encoding: gzip, deflate, sdch
+dnt: 1
+------------- Body ---------------
+----------------------------------
+
+2015-11-10 12:11:13,365 Thread-10 INFO  server.Server - 
+----------- Header ----------------
+GET /v1/GhostbustersDB/ghosts HTTP/1.1
+cache-control: no-cache
+connection: keep-alive
+accept-language: en-US,en;q=0.8
+host: localhost:8080
+accept: */*
+postman-token: 3f9f09f5-56c7-b63f-a0f1-3fb1f055940b
+user-agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36
+accept-encoding: gzip, deflate, sdch
+dnt: 1
+------------- Body ---------------
+----------------------------------
+
+2015-11-10 12:11:21,818 Thread-11 INFO  server.Server - 
+----------- Header ----------------
+POST /v1/GhostbustersDB/ghosts HTTP/1.1
+content-type: text/plain;charset=UTF-8
+cache-control: no-cache
+connection: keep-alive
+accept-language: en-US,en;q=0.8
+host: localhost:8080
+accept: */*
+content-length: 81
+postman-token: 633522b9-9cc9-5deb-c81c-bdde80714aca
+origin: chrome-extension://fhbjgbiflinjbdggehcddcbncdddomop
+user-agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36
+accept-encoding: gzip, deflate
+dnt: 1
+------------- Body ---------------
+{
+    "name": "Stay-Puft Marshmallow Man",
+    "type": "Demonic Manifestation"
+}
+----------------------------------
+
+2015-11-10 12:11:26,070 Thread-12 INFO  server.Server - 
+----------- Header ----------------
+GET /v1/GhostbustersDB/ghosts HTTP/1.1
+cache-control: no-cache
+connection: keep-alive
+accept-language: en-US,en;q=0.8
+host: localhost:8080
+accept: */*
+postman-token: e8bde034-ce5f-e480-67c6-f9f1681a1bef
+user-agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36
+accept-encoding: gzip, deflate, sdch
+dnt: 1
+------------- Body ---------------
+----------------------------------
+
+2015-11-10 15:41:47,382 Thread-9 INFO  server.Server - 
+----------- Header ----------------
+GET /v1/GhostbustersDB/haunts HTTP/1.1
+cache-control: no-cache
+connection: keep-alive
+accept-language: en-US,en;q=0.8
+host: localhost:8080
+accept: */*
+postman-token: 3204ce58-c792-e580-d3e7-7665b7b2bb0e
+user-agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36
+accept-encoding: gzip, deflate, sdch
+dnt: 1
+------------- Body ---------------
+----------------------------------
+
+2015-11-10 15:43:26,310 Thread-10 INFO  server.Server - 
+----------- Header ----------------
+POST /v1/GhostbustersDB/haunts HTTP/1.1
+content-type: application/json
+cache-control: no-cache
+connection: keep-alive
+accept-language: en-US,en;q=0.8
+host: localhost:8080
+accept: */*
+content-length: 36
+postman-token: 112738d4-67d0-8b02-636b-2038436afc69
+origin: chrome-extension://fhbjgbiflinjbdggehcddcbncdddomop
+user-agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36
+accept-encoding: gzip, deflate
+dnt: 1
+------------- Body ---------------
+{
+    "name": "The Abandoned Mill"
+}----------------------------------
+
+2015-11-10 15:43:39,486 Thread-11 INFO  server.Server - 
+----------- Header ----------------
+POST /v1/GhostbustersDB/haunts HTTP/1.1
+content-type: application/json
+cache-control: no-cache
+connection: keep-alive
+accept-language: en-US,en;q=0.8
+host: localhost:8080
+accept: */*
+content-length: 34
+postman-token: 2fcdca52-6862-ddc5-455d-78f92413d372
+origin: chrome-extension://fhbjgbiflinjbdggehcddcbncdddomop
+user-agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36
+accept-encoding: gzip, deflate
+dnt: 1
+------------- Body ---------------
+{
+    "name": "The Quain Manor"
+}
+----------------------------------
+
+2015-11-10 15:43:43,787 Thread-12 INFO  server.Server - 
+----------- Header ----------------
+GET /v1/GhostbustersDB/haunts HTTP/1.1
+cache-control: no-cache
+connection: keep-alive
+accept-language: en-US,en;q=0.8
+host: localhost:8080
+accept: */*
+postman-token: 5f2a71d9-5b6c-efba-f712-57afcb2b2699
+user-agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36
+accept-encoding: gzip, deflate, sdch
+dnt: 1
+------------- Body ---------------
+----------------------------------
+
+2015-11-10 15:44:09,190 Thread-13 INFO  server.Server - 
+----------- Header ----------------
+PUT /v1/GhostbustersDB/haunts/1 HTTP/1.1
+content-type: application/json
+cache-control: no-cache
+connection: keep-alive
+accept-language: en-US,en;q=0.8
+host: localhost:8080
+accept: */*
+content-length: 41
+postman-token: 230c771c-dfac-44ac-c771-ab720ddabed7
+origin: chrome-extension://fhbjgbiflinjbdggehcddcbncdddomop
+user-agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36
+accept-encoding: gzip, deflate, sdch
+dnt: 1
+------------- Body ---------------
+{
+    "name": "That Old Abandoned Mill"
+}----------------------------------
+
+2015-11-10 15:44:13,189 Thread-14 INFO  server.Server - 
+----------- Header ----------------
+GET /v1/GhostbustersDB/haunts HTTP/1.1
+cache-control: no-cache
+connection: keep-alive
+accept-language: en-US,en;q=0.8
+host: localhost:8080
+accept: */*
+postman-token: 3704fe3e-41c6-ad06-0eac-8582ede5fb20
+user-agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36
+accept-encoding: gzip, deflate, sdch
+dnt: 1
+------------- Body ---------------
+----------------------------------
+
+2015-11-10 15:44:26,991 Thread-15 INFO  server.Server - 
+----------- Header ----------------
+DELETE /v1/GhostbustersDB/haunts/2 HTTP/1.1
+cache-control: no-cache
+connection: keep-alive
+accept-language: en-US,en;q=0.8
+host: localhost:8080
+accept: */*
+postman-token: 9d034f2c-381a-4cf4-d847-6dada9d69c20
+origin: chrome-extension://fhbjgbiflinjbdggehcddcbncdddomop
+user-agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36
+accept-encoding: gzip, deflate, sdch
+dnt: 1
+------------- Body ---------------
+----------------------------------
+
+2015-11-10 15:44:30,090 Thread-16 INFO  server.Server - 
+----------- Header ----------------
+GET /v1/GhostbustersDB/haunts HTTP/1.1
+cache-control: no-cache
+connection: keep-alive
+accept-language: en-US,en;q=0.8
+host: localhost:8080
+accept: */*
+postman-token: 0842d0ad-fa9b-4a02-9dce-36e0ffaa6624
+user-agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36
+accept-encoding: gzip, deflate, sdch
+dnt: 1
+------------- Body ---------------
+----------------------------------
+
