@@ -3,7 +3,9 @@
 // Declare app level module which depends on views, and components
 angular.module('swsClient', [
   'ngRoute',
-  'swsClient.ajaxTest'
+  'swsClient.ajaxTest',
+  'swsClient.ghostsViewer',
+  'swsClient.hauntsViewer'
 ]).
 config(['$routeProvider', '$httpProvider', function($routeProvider, $httpProvider) {
   $routeProvider.otherwise({redirectTo: '/ajaxTest'});

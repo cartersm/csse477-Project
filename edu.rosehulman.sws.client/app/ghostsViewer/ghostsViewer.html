@@ -1,0 +1,132 @@
+<h1>Ghosts</h1>
+
+<div>
+	<h3>Active Ghost</h3>
+	<p>
+		<b>ID: </b>{{activeGhost.id}}
+	</p>
+	<p>
+		<b>Name: </b>{{activeGhost.name}}
+	</p>
+	<p>
+		<b>Type: </b>{{activeGhost.type}}
+	</p>
+</div>
+
+<table>
+	<thead>
+		<tr>
+			<th><h3>Get a Ghost</h3></th>
+			<th><h3>Add a New Ghost</h3></th>
+			<th><h3>Update a Ghost</h3></th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>
+				<form name="getGhostForm" role="form">
+					<div class="form-group"
+						ng-class="{ 'has-error' : getGhostForm.id.$invalid }">
+						<label>ID: <input type="number" name="id"
+							ng-model="get.id" class="form-control" placeholder="ID"
+							required="" autofocus="">
+						</label>
+
+						<p class="help-block" ng-show="getGhostForm.id.$invalid">Enter
+							an Integer.</p>
+					</div>
+					<button class="btn btn-lg btn-primary" ng-click="getGhost(get.id)"
+						ng-disabled="!get.id">Click to Get a Ghost!</button>
+				</form>
+			</td>
+			<td>
+				<form name="addGhostForm" role="form">
+					<div class="form-group"
+						ng-class="{ 'has-error' : addGhostForm.name.$invalid }">
+						<label>Name: <input type="text" name="name"
+							ng-model="add.name" class="form-control" placeholder="name"
+							required="" autofocus="">
+						</label>
+
+						<p class="help-block" ng-show="addGhostForm.name.$invalid">Name
+							must be at least 4 characters.</p>
+					</div>
+					<div class="form-group"
+						ng-class="{ 'has-error' : addGhostForm.type.$invalid }">
+						<label>Type: <input type="text" name="type"
+							ng-model="add.type" class="form-control" placeholder="type"
+							required="" autofocus="">
+						</label>
+
+						<p class="help-block" ng-show="addGhostForm.type.$invalid">Type
+							must be at least 4 characters.</p>
+					</div>
+					<button class="btn btn-lg btn-primary"
+						ng-click="addGhost(add.name, add.type)"
+						ng-disabled="!add.name || !add.type">Click to Add Your
+						Ghost!</button>
+				</form>
+			</td>
+			<td>
+				<form name="updateGhostForm" role="form">
+					<div class="form-group"
+						ng-class="{ 'has-error' : updateGhostForm.id.$invalid }">
+						<label>ID: <input type="number" name="id"
+							ng-model="update.id" class="form-control" placeholder="ID"
+							required="" autofocus="">
+						</label>
+
+						<p class="help-block" ng-show="updateGhostForm.id.$invalid">Enter
+							an Integer.</p>
+					</div>
+					<div class="form-group"
+						ng-class="{ 'has-error' : updateGhostForm.name.$invalid }">
+						<label>Name: <input type="text" name="name"
+							ng-model="update.name" class="form-control" placeholder="name"
+							required="" autofocus="">
+						</label>
+
+						<p class="help-block" ng-show="updateGhostForm.name.$invalid">Name
+							must be at least 4 characters.</p>
+					</div>
+					<div class="form-group"
+						ng-class="{ 'has-error' : updateGhostForm.type.$invalid }">
+						<label>Type: <input type="text" name="type"
+							ng-model="update.type" class="form-control" placeholder="type"
+							required="" autofocus="">
+						</label>
+
+						<p class="help-block" ng-show="updateGhostForm.type.$invalid">Type
+							must be at least 4 characters.</p>
+					</div>
+					<button class="btn btn-lg btn-primary"
+						ng-click="updateGhost(update.id, update.name, update.type)"
+						ng-disabled="!update.id || !update.name || !update.type">Click to Add
+						Your Ghost!</button>
+				</form>
+			</td>
+		</tr>
+	</tbody>
+</table>
+
+<h3>All Ghosts</h3>
+<table class="table-striped">
+	<thead>
+		<tr>
+			<th>ID</th>
+			<th>Name</th>
+			<th>Type</th>
+		</tr>
+	</thead>
+	<tbody ng-model="ghosts">
+		<tr ng-repeat="ghost in ghosts">
+			<td>{{ghost.id}}</td>
+			<td>{{ghost.name}}</td>
+			<td>{{ghost.type}}</td>
+			<td>
+				<button class="btn btn-danger" ng-click="deleteGhost(ghost.id)">Delete
+				</button>
+			</td>
+		</tr>
+	</tbody>
+</table>

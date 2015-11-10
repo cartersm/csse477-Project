@@ -1,0 +1,109 @@
+<div class="container">
+	<h1>Haunts</h1>
+
+	<div>
+		<h3>Active Haunt</h3>
+		<p>
+			<b>ID: </b>{{activeHaunt.id}}
+		</p>
+		<p>
+			<b>Name: </b>{{activeHaunt.name}}
+		</p>
+	</div>
+
+	<table>
+		<thead>
+			<tr>
+				<th><h3>Get a Haunt</h3></th>
+				<th><h3>Add a New Haunt</h3></th>
+				<th><h3>Update a Haunt</h3></th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>
+					<form name="getHauntForm" role="form">
+						<div class="form-group"
+							ng-class="{ 'has-error' : getHauntForm.id.$invalid }">
+							<label>ID: <input type="number" name="id"
+								ng-model="get.id" class="form-control" placeholder="ID"
+								required="" autofocus="">
+							</label>
+
+							<p class="help-block" ng-show="getHauntForm.id.$invalid">Enter
+								an Integer.</p>
+						</div>
+						<button class="btn btn-lg btn-primary" ng-click="getHaunt(get.id)"
+							ng-disabled="!get.id">Click to Get a Haunt!</button>
+					</form>
+				</td>
+				<td>
+					<form name="addHauntForm" role="form">
+						<div class="form-group"
+							ng-class="{ 'has-error' : addHauntForm.name.$invalid }">
+							<label>Name: <input type="text" name="name"
+								ng-model="add.name" class="form-control" placeholder="name"
+								required="" autofocus="">
+							</label>
+
+							<p class="help-block" ng-show="addHauntForm.name.$invalid">Name
+								must be at least 4 characters.</p>
+						</div>
+						<button class="btn btn-lg btn-primary"
+							ng-click="addHaunt(add.name)"
+							ng-disabled="!add.name">Click to Add Your
+							Haunt!</button>
+					</form>
+				</td>
+				<td>
+					<form name="updateHauntForm" role="form">
+						<div class="form-group"
+							ng-class="{ 'has-error' : updateHauntForm.id.$invalid }">
+							<label>ID: <input type="number" name="id"
+								ng-model="update.id" class="form-control" placeholder="ID"
+								required="" autofocus="">
+							</label>
+
+							<p class="help-block" ng-show="updateHauntForm.id.$invalid">Enter
+								an Integer.</p>
+						</div>
+						<div class="form-group"
+							ng-class="{ 'has-error' : updateHauntForm.name.$invalid }">
+							<label>Name: <input type="text" name="name"
+								ng-model="update.name" class="form-control" placeholder="name"
+								required="" autofocus="">
+							</label>
+
+							<p class="help-block" ng-show="updateHauntForm.name.$invalid">Name
+								must be at least 4 characters.</p>
+						</div>
+						<button class="btn btn-lg btn-primary"
+							ng-click="updateHaunt(update.id, update.name)"
+							ng-disabled="!update.id || !update.name">Click to Add
+							Your Haunt!</button>
+					</form>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<h3>All Haunts</h3>
+	<table class="table-striped">
+		<thead>
+			<tr>
+				<th>ID</th>
+				<th>Name</th>
+			</tr>
+		</thead>
+		<tbody ng-model="haunts">
+			<tr ng-repeat="haunt in haunts">
+				<td>{{haunt.id}}</td>
+				<td>{{haunt.name}}</td>
+				<td>
+					<button class="btn btn-danger" ng-click="deleteHaunt(haunt.id)">Delete
+					</button>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
