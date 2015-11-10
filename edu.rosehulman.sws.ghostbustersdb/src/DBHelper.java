@@ -1,6 +1,6 @@
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
@@ -56,8 +56,8 @@ public class DBHelper {
 		if (this.conn != null) {
 			try {
 				stmt = this.conn.createStatement();
-				stmt.executeUpdate(command);
-				return true;
+				int rows = stmt.executeUpdate(command);
+				return rows > 0;
 			} finally {
 				if (stmt != null) {
 					stmt.close();
@@ -67,16 +67,29 @@ public class DBHelper {
 		return false;
 	}
 
-	public File executeQuery(String command) throws SQLException, IOException {
+	public File executeQuery(String command, String rootDirectory) throws SQLException, IOException {
 		Statement stmt = null;
 		if (this.conn != null) {
+			final String fileName = UUID.randomUUID().toString();
+			final File file = File.createTempFile(fileName, ".json");
 			try {
 				stmt = this.conn.createStatement();
 				ResultSet results = stmt.executeQuery(command);
 				ResultSetMetaData rsmd = results.getMetaData();
-				final File file = new File("/tmp/" + UUID.randomUUID() + ".json");
+
 				// Borrowed from http://stackoverflow.com/questions/18960446/how-to-convert-a-java-resultset-into-json
-				JsonWriter writer = new JsonWriter(new FileWriter(file));
+				JsonWriter writer = new JsonWriter(new PrintWriter(file));
+				int count = 0;
+				int numRows = 0;
+				boolean hasRows = results.last();
+				if (hasRows) {
+					numRows = results.getRow();
+				} 
+				results.beforeFirst();
+				
+				writer.beginObject();
+				writer.name("elements");
+				writer.beginArray();
 				
 				while (results.next()) {
 					writer.beginObject();
@@ -85,7 +98,15 @@ public class DBHelper {
 						writer.value(results.getString(idx));
 					}
 					writer.endObject();
+					count++;
 				}
+				if (count == 0) {
+					writer.beginObject();
+					writer.endObject();
+				}
+				writer.endArray();
+				writer.endObject();
+				
 				writer.flush();
 				writer.close();
 				return file;
@@ -118,19 +139,32 @@ public class DBHelper {
 			DatabaseMetaData metadata = conn.getMetaData();
 			ResultSet results = metadata.getTables(null, null, GHOSTS_TABLE_NAME, null);
 			if (!results.next()) {
-				String createGhostsString = "CREATE TABLE" + GHOSTS_TABLE_NAME + " ( " + "ID INTEGER NOT NULL, "
-						+ "NAME varchar(40) NOT NULL, " + "TYPE varchar(40) NOT NULL, " + "PRIMARY KEY (ID))";
+				String createGhostsString = "CREATE TABLE " + GHOSTS_TABLE_NAME 
+						+ " ( " + "id INTEGER NOT NULL AUTO_INCREMENT, "
+						+ "name varchar(40) NOT NULL, " 
+						+ "type varchar(40) NOT NULL, " 
+						+ "PRIMARY KEY (id));";
 				this.executeUpdate(createGhostsString);
 			}
 			results = metadata.getTables(null, null, HAUNTS_TABLE_NAME, null);
 			if (!results.next()) {
-				String createHauntsString = "CREATE TABLE" + HAUNTS_TABLE_NAME + " ( " + "ID INTEGER NOT NULL, "
-						+ "NAME varchar(40) NOT NULL, " + "PRIMARY KEY (ID))";
+				String createHauntsString = "CREATE TABLE " + HAUNTS_TABLE_NAME 
+						+ " ( " + "id INTEGER NOT NULL AUTO_INCREMENT, "
+						+ "name varchar(40) NOT NULL, " 
+						+ "PRIMARY KEY (id))";
 				this.executeUpdate(createHauntsString);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return;
 		}
+	}
+	
+	public static void main(String[] args) throws InstantiationException, IllegalAccessException, ClassNotFoundException, SQLException {
+		Class.forName("com.mysql.jdbc.Driver").newInstance();
+		DBHelper helper = new DBHelper();
+		helper.start();
+//		helper.executeUpdate("DROP TABLE IF EXISTS GHOSTS;");
+//		helper.executeUpdate("DROP TABLE IF EXISTS HAUNTS;");
 	}
 }

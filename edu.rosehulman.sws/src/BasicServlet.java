@@ -31,7 +31,7 @@ public class BasicServlet implements IServlet {
 		String path = getFilePath();
 
 		File file = new File(rootDirectory + path);
-		
+
 		System.out.println(file);
 
 		if (file.exists()) {
@@ -122,20 +122,12 @@ public class BasicServlet implements IServlet {
 				String location = rootDirectory + path + Protocol.SYSTEM_SEPARATOR + Protocol.DEFAULT_FILE;
 				file = new File(location);
 				if (file.exists()) {
-					if (!file.getName().equalsIgnoreCase("deleted.txt") && file.delete()) {
-						response = HttpResponseFactory.create200OK(new File(deleted), Protocol.CLOSE);
-					} else {
-						response = HttpResponseFactory.create400BadRequest(Protocol.CLOSE);
-					}
+					response = HttpResponseFactory.create204NoContent(Protocol.CLOSE);
 				} else {
 					response = HttpResponseFactory.create404NotFound(Protocol.CLOSE);
 				}
 			} else {
-				if (!file.getName().equalsIgnoreCase("deleted.txt") && file.delete()) {
-					response = HttpResponseFactory.create200OK(new File(deleted), Protocol.CLOSE);
-				} else {
-					response = HttpResponseFactory.create400BadRequest(Protocol.CLOSE);
-				}
+				response = HttpResponseFactory.create204NoContent(Protocol.CLOSE);
 			}
 		} else {
 			response = HttpResponseFactory.create404NotFound(Protocol.CLOSE);

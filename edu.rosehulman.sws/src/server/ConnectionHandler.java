@@ -101,8 +101,7 @@ public class ConnectionHandler implements Runnable {
 			// Protocol.BAD_REQUEST_CODE and Protocol.NOT_SUPPORTED_CODE
 			int status = pe.getStatus();
 			if (status == Protocol.BAD_REQUEST_CODE) {
-				response = HttpResponseFactory
-						.create400BadRequest(Protocol.CLOSE);
+				response = HttpResponseFactory.create400BadRequest(Protocol.CLOSE);
 			}
 			// TODO: Handle version not supported code as well
 		} catch (Exception e) {
@@ -144,18 +143,17 @@ public class ConnectionHandler implements Runnable {
 			} else {
 
 				if (request.getUri().contains("favicon") || request.getUri().equals("/")) {
-					response = HttpResponseFactory
-							.create400BadRequest(Protocol.CLOSE);
+					response = HttpResponseFactory.create400BadRequest(Protocol.CLOSE);
 				} else {
 
-					AbstractPlugin plugin = getPluginfromUri(request.getUri());
+					AbstractPlugin plugin = getPluginFromUri(request.getUri());
 					if (plugin != null) {
 						response = plugin.handle(request);
 					} else {
-						response = HttpResponseFactory
-								.create400BadRequest(Protocol.CLOSE);
+						response = HttpResponseFactory.create400BadRequest(Protocol.CLOSE);
 					}
-					System.out.println(request.getMethod() + " request to " + request.getUri() + " from " + this.socket.getInetAddress());
+					System.out.println(request.getMethod() + " request to " + request.getUri() + " from "
+							+ this.socket.getInetAddress());
 					this.server.addToAuditTrail(request);
 				}
 			}
@@ -187,8 +185,13 @@ public class ConnectionHandler implements Runnable {
 		this.server.incrementServiceTime(end - start);
 	}
 
-	private AbstractPlugin getPluginfromUri(String uri) {
-		final String pluginString = uri.substring(1, uri.indexOf("/", 1));
+	private AbstractPlugin getPluginFromUri(String uri) {
+		final String pluginString;
+		if (uri.contains("v1/")) {
+			pluginString = uri.substring(uri.indexOf("v1/") + 3, uri.indexOf("/", 4));
+		} else {
+			pluginString = uri.substring(1, uri.indexOf("/", 1));
+		}
 		return this.server.getPlugin(pluginString);
 	}
 }

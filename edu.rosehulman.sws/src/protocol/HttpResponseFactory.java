@@ -170,5 +170,33 @@ public class HttpResponseFactory {
 		fillGeneralHeader(response, connection);
 		
 		return response;
+	}
+
+	/**
+	 * @param close
+	 * @return
+	 */
+	public static HttpResponse create201Created(String connection) {
+		HttpResponse response = new HttpResponse(Protocol.VERSION, Protocol.CREATED_CODE, 
+				Protocol.CREATED_TEXT, new HashMap<String, String>(), null);
+		
+		// Lets fill up the header fields with more information
+		fillGeneralHeader(response, connection);
+		
+		return response;
+	}
+	
+	/**
+	 * @param close
+	 * @return
+	 */
+	public static HttpResponse create204NoContent(String connection) {
+		HttpResponse response = new HttpResponse(Protocol.VERSION, Protocol.NO_CONTENT_CODE, 
+				Protocol.NO_CONTENT_TEXT, new HashMap<String, String>(), null);
+		
+		// Lets fill up the header fields with more information
+		fillGeneralHeader(response, connection);
+		
+		return response;
 	}	
 }

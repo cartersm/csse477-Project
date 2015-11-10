@@ -66,6 +66,12 @@ public class Protocol {
     public static final int INTERNAL_SERVER_ERROR_CODE = 500;
     public static final String INTERNAL_SERVER_ERROR_TEXT = "Internal server error";
 
+    public static final int CREATED_CODE = 201;
+    public static final String CREATED_TEXT = "Created";
+    
+    public static final int NO_CONTENT_CODE = 204;
+    public static final String NO_CONTENT_TEXT = "No content";
+    
     // Some useful header elements in request
     public static final String HOST = "Host";
     public static final String CONNECTION = "Connection";
@@ -79,6 +85,7 @@ public class Protocol {
     public static final String CONTENT_TYPE = "Content-Type";
     public static final String ACCESS_CONTROL_ALLOW_ORIGIN = "Access-Control-Allow-Origin";
 
+    public static final String APPLICATION_JSON = "application/json";
     
     /**
      * A chunk size to be used when reading a file and sending it to a socket. 

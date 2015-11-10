@@ -11,7 +11,12 @@ public class GhostbustersDBPlugin extends AbstractPlugin {
 	public GhostbustersDBPlugin(String rootDirectory) {
 		super(rootDirectory);
 		this.dbHelper = new DBHelper();
+		this.dbHelper.start();
+		
+		((GhostsServlet) getServlet("ghosts")).setDbHelper(this.dbHelper);
+		((HauntsServlet) getServlet("haunts")).setDbHelper(this.dbHelper);
 	}
+
 
 	@Override
 	protected IServlet getServletFromUri(String uri) throws ServletUndefinedException {
@@ -22,6 +27,9 @@ public class GhostbustersDBPlugin extends AbstractPlugin {
 		}
 		
 		int index = uri.indexOf("/");
+		uri = uri.substring(index + 1);
+		index = uri.indexOf("/");
+		System.out.println("URI = " + uri);
 		if (index == -1) {
 			// We should have only the servlet name.
 			// getServlet() will throw an exception if we don't.
@@ -33,8 +41,8 @@ public class GhostbustersDBPlugin extends AbstractPlugin {
 	@Override
 	protected Map<String, IServlet> createServlets() {
 		Map<String, IServlet> servletMap = new HashMap<>();
-		servletMap.put("ghosts", new GhostsServlet(this.dbHelper));
-		servletMap.put("haunts", new HauntsServlet(this.dbHelper));
+		servletMap.put("ghosts", new GhostsServlet());
+		servletMap.put("haunts", new HauntsServlet());
 		return servletMap;
 	}
 
