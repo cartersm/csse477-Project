@@ -16,6 +16,12 @@ public class HauntsServlet implements IServlet {
 	private static final int SLASH_BEFORE_HAUNTS = 18;
 	private static final int SLASH_AFTER_HAUNTS = 25;
 	
+	private static final String METHODS = 
+			Protocol.GET + ", " + 
+			Protocol.PUT + ", " + 
+			Protocol.POST + ", " + 
+			Protocol.DELETE;
+	
 	private static final String GET_ALL_COMMAND = 
 			"SELECT * " + 
 			"FROM " + DBHelper.HAUNTS_TABLE_NAME;
@@ -135,6 +141,15 @@ public class HauntsServlet implements IServlet {
 			}
 		}
 		return HttpResponseFactory.create400BadRequest(Protocol.CLOSE);
+	}
+	
+	@Override
+	public HttpResponse doOptions(HttpRequest request, String rootDirectory) {
+		HttpResponse response = HttpResponseFactory.create204NoContent(Protocol.CLOSE);
+		response.put(Protocol.ACCESS_CONTROL_ALLOW_ORIGIN, request.getHeader().get("origin"));
+		response.put(Protocol.ACCESS_CONTROL_ALLOW_METHODS, METHODS);
+		response.put(Protocol.ACCESS_CONTROL_ALLOW_HEADERS, request.getHeader().get("access-control-request-headers"));
+		return response;
 	}
 
 	// Unused

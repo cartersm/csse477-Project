@@ -53,4 +53,9 @@ public class HelloServlet implements IServlet {
 		return Protocol.SYSTEM_SEPARATOR + "hello.json";
 	}
 
+	@Override
+	public HttpResponse doOptions(HttpRequest request, String rootDirectory) {
+		return null;
+	}
+
 }

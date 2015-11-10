@@ -9,6 +9,8 @@ public interface IServlet {
 
 	public HttpResponse doDelete(HttpRequest request, String rootDirectory);
 
-	String getFilePath();
+	public HttpResponse doOptions(HttpRequest request, String rootDirectory);
+
+	public String getFilePath();
 
 }

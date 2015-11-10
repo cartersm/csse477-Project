@@ -1,6 +1,9 @@
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -15,6 +18,12 @@ public class GhostsServlet implements IServlet {
 	// indices of "/" characters in the expected URI
 	private static final int SLASH_BEFORE_GHOSTS = 18;
 	private static final int SLASH_AFTER_GHOSTS = 25;
+	
+	private static final String METHODS = 
+			Protocol.GET + ", " + 
+			Protocol.PUT + ", " + 
+			Protocol.POST + ", " + 
+			Protocol.DELETE;
 	
 	private static final String GET_ALL_COMMAND = 
 			"SELECT * " + 
@@ -139,6 +148,15 @@ public class GhostsServlet implements IServlet {
 		return HttpResponseFactory.create400BadRequest(Protocol.CLOSE);
 	}
 
+	@Override
+	public HttpResponse doOptions(HttpRequest request, String rootDirectory) {
+		HttpResponse response = HttpResponseFactory.create204NoContent(Protocol.CLOSE);
+		response.put(Protocol.ACCESS_CONTROL_ALLOW_ORIGIN, request.getHeader().get("origin"));
+		response.put(Protocol.ACCESS_CONTROL_ALLOW_METHODS, METHODS);
+		response.put(Protocol.ACCESS_CONTROL_ALLOW_HEADERS, request.getHeader().get("access-control-request-headers"));
+		return response;
+	}
+	
 	// Unused
 	@Override
 	public String getFilePath() {

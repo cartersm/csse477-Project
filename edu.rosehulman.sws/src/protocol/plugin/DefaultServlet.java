@@ -192,4 +192,9 @@ final class DefaultServlet implements IServlet {
 		}
 		return response;
 	}
+
+	@Override
+	public HttpResponse doOptions(HttpRequest request, String rootDirectory) {
+		return null;
+	}
 }

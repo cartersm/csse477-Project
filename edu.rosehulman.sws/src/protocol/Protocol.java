@@ -43,6 +43,7 @@ public class Protocol {
     public static final String POST = "POST";
     public static final String PUT = "PUT";
     public static final String DELETE = "DELETE";
+    public static final String OPTIONS = "OPTIONS";
     
     // Some useful http codes and text
     public static final int OK_CODE = 200;
@@ -84,6 +85,8 @@ public class Protocol {
     public static final String CONTENT_LENGTH = "Content-Length";
     public static final String CONTENT_TYPE = "Content-Type";
     public static final String ACCESS_CONTROL_ALLOW_ORIGIN = "Access-Control-Allow-Origin";
+    public static final String ACCESS_CONTROL_ALLOW_METHODS = "Access-Control-Allow-Methods";
+    public static final String ACCESS_CONTROL_ALLOW_HEADERS = "Access-Control-Allow-Headers";
 
     public static final String APPLICATION_JSON = "application/json";
     

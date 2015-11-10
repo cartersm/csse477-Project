@@ -65,6 +65,8 @@ public abstract class AbstractPlugin {
 			return servlet.doPost(request, this.rootDirectory);
 		case Protocol.DELETE:
 			return servlet.doDelete(request, this.rootDirectory);
+		case Protocol.OPTIONS:
+			return servlet.doOptions(request, this.rootDirectory);
 		}
 		return HttpResponseFactory.create400BadRequest(Protocol.CLOSE);
 	}
