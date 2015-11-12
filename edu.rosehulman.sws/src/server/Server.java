@@ -21,16 +21,17 @@
 
 package server;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -38,9 +39,13 @@ import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.rabbitmq.client.AMQP;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
+import com.rabbitmq.client.Consumer;
+import com.rabbitmq.client.DefaultConsumer;
+import com.rabbitmq.client.Envelope;
 import com.rabbitmq.client.MessageProperties;
 
 import gui.WebServer;
@@ -49,7 +54,6 @@ import protocol.HttpResponse;
 import protocol.HttpResponseFactory;
 import protocol.Protocol;
 import protocol.ProtocolException;
-import protocol.plugin.AbstractPlugin;
 
 /**
  * This represents a welcoming server for the incoming TCP request from a HTTP
@@ -64,6 +68,7 @@ public class Server implements Runnable {
 	private static final int MAX_PROCESSING_REQUESTS = 5;
 	private static final String HOST = "cartersm-w530.rose-hulman.edu";
 	static final String SERVER_QUEUE = "server-queue";
+	static final String SERVER_RESPONSE_QUEUE = "server-response-queue";
 	private String rootDirectory;
 	private int port;
 	private boolean stop;
@@ -73,7 +78,6 @@ public class Server implements Runnable {
 	private long serviceTime;
 
 	WebServer window;
-	private Map<String, AbstractPlugin> plugins;
 
 	private final Object waitingRequestsLock = new Object();
 	private List<Socket> waitingRequests;
@@ -103,7 +107,6 @@ public class Server implements Runnable {
 		this.connections = 0;
 		this.serviceTime = 0;
 		this.window = window;
-		this.plugins = new HashMap<>();
 
 		this.waitingRequests = new ArrayList<Socket>();
 		this.bannedUsers = new ArrayList<String>();
@@ -280,6 +283,8 @@ public class Server implements Runnable {
 		try {
 			this.welcomeSocket = new ServerSocket(port);
 
+			initConsumer();
+			
 			// Now keep welcoming new connections until stop flag is set to true
 			while (true) {
 				// Listen for incoming socket connection
@@ -310,8 +315,62 @@ public class Server implements Runnable {
 
 			}
 			this.welcomeSocket.close();
+			
+			
 		} catch (Exception e) {
 			window.showSocketException(e);
+		}
+	}
+	
+	/**
+	 * 
+	 */
+	private void initConsumer() {
+		ConnectionFactory factory = new ConnectionFactory();
+		factory.setHost(HOST);
+		factory.setUsername("root");
+		factory.setPassword("root");
+
+		try {
+			Connection connection = factory.newConnection();
+			final Channel channel = connection.createChannel();
+			channel.queueDeclare(Server.SERVER_RESPONSE_QUEUE, true, false, false, null);
+
+			channel.basicQos(1);
+			final Consumer consumer = new DefaultConsumer(channel) {
+				@Override
+				public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties,
+						byte[] body) throws IOException {
+					
+					ByteArrayInputStream in = new ByteArrayInputStream(body);
+					ObjectInputStream objIn = new ObjectInputStream(in);
+					
+					HttpResponse response;
+					try {
+						response = (HttpResponse) objIn.readObject();
+					} catch (ClassNotFoundException e) {
+						e.printStackTrace();
+						return;
+					}
+					
+					Socket socket = sockets.get(response.getSocketHash());
+					incrementServiceTime(response.getServiceTime());
+					incrementConnections(1);
+					try {
+						response.write(socket.getOutputStream());
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+					
+					socket.close();
+					sockets.remove(response.getSocketHash());
+					
+					channel.basicAck(envelope.getDeliveryTag(), false);
+				}
+			};
+			channel.basicConsume(Server.SERVER_RESPONSE_QUEUE, false, consumer);
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 
@@ -323,15 +382,12 @@ public class Server implements Runnable {
 			this.server = server;
 		}
 
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see java.lang.Runnable#run()
-		 */
 		@Override
 		public void run() {
 			ConnectionFactory factory = new ConnectionFactory();
 			factory.setHost(HOST);
+			factory.setUsername("root");
+			factory.setPassword("root");
 
 			try {
 				Connection connection = factory.newConnection();
@@ -441,17 +497,6 @@ public class Server implements Runnable {
 					objOut.close();
 					out.close();
 					
-					
-					final ConnectionHandler handler = new ConnectionHandler(this.server, socket);
-					server.incrementNumProcessingRequests();
-					new Thread(new Runnable() {
-						@Override
-						public void run() {
-							handler.run();
-							server.decrementNumActiveRequests(socket.getInetAddress().toString());
-							server.decrementNumProcessingRequests();
-						}
-					}).start();
 				}
 			} catch (Exception e) {
 				window.showSocketException(e);
@@ -490,41 +535,5 @@ public class Server implements Runnable {
 		if (this.welcomeSocket != null)
 			return this.welcomeSocket.isClosed();
 		return true;
-	}
-
-	/* ----- Plugin handling and listening ----- */
-
-	public AbstractPlugin getPlugin(String key) {
-		return this.plugins.get(key);
-	}
-
-	/**
-	 * @return
-	 */
-	public Map<String, AbstractPlugin> getPlugins() {
-		return Collections.unmodifiableMap(this.plugins);
-	}
-
-	/**
-	 * @param simpleName
-	 * @param plugin
-	 */
-	public void addPlugin(String simpleName, AbstractPlugin plugin) {
-		this.plugins.put(simpleName, plugin);
-	}
-
-	/**
-	 * @param filename
-	 */
-	public void removePlugin(String filename) {
-		this.plugins.remove(filename);
-	}
-
-	int getNumProcessingRequests() {
-		return numProcessingRequests;
-	}
-
-	void setNumProcessingRequests(int numProcessingRequests) {
-		this.numProcessingRequests = numProcessingRequests;
 	}
 }

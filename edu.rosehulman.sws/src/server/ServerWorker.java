@@ -1,9 +1,11 @@
 package server;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.URI;
 import java.net.UnknownHostException;
 import java.nio.file.DirectoryIteratorException;
@@ -31,8 +33,10 @@ import com.rabbitmq.client.ConnectionFactory;
 import com.rabbitmq.client.Consumer;
 import com.rabbitmq.client.DefaultConsumer;
 import com.rabbitmq.client.Envelope;
+import com.rabbitmq.client.MessageProperties;
 
 import protocol.HttpRequest;
+import protocol.HttpResponse;
 import protocol.Protocol;
 import protocol.plugin.AbstractPlugin;
 
@@ -79,12 +83,14 @@ public class ServerWorker implements Runnable {
 			Connection connection = factory.newConnection();
 			final Channel channel = connection.createChannel();
 			channel.queueDeclare(Server.SERVER_QUEUE, true, false, false, null);
+			channel.queueDeclare(Server.SERVER_RESPONSE_QUEUE, true, false, false, null);
 
 			channel.basicQos(1);
 			final Consumer consumer = new DefaultConsumer(channel) {
 				@Override
 				public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties,
 						byte[] body) throws IOException {
+					
 					if (getNumProcessingRequests() >= MAX_PROCESSING_REQUESTS) {
 						System.out.println("Currently processing" + MAX_PROCESSING_REQUESTS
 								+ " or more requests. Waiting for processes to finish before processing more.");
@@ -113,7 +119,16 @@ public class ServerWorker implements Runnable {
 						public void run() {
 							handler.run();
 							decrementNumProcessingRequests();
-							
+							HttpResponse response = handler.getResponse();
+							ByteArrayOutputStream out = new ByteArrayOutputStream();
+							ObjectOutputStream objOut;
+							try {
+								objOut = new ObjectOutputStream(out);
+								objOut.writeObject(response);
+								channel.basicPublish("", Server.SERVER_RESPONSE_QUEUE, MessageProperties.PERSISTENT_TEXT_PLAIN, out.toByteArray());
+							} catch (IOException e) {
+								e.printStackTrace();
+							}
 						}
 					}).start();
 

@@ -65,36 +65,36 @@ public class WebServer extends JFrame {
 	private JTextField txtServiceRate;
 
 	private Server server;
-//	private ServiceRateUpdater rateUpdater;
+	private ServiceRateUpdater rateUpdater;
 
-//	/**
-//	 * For constantly updating the service rate in the GUI.
-//	 * 
-//	 * @author Chandan R. Rupakheti (rupakhet@rose-hulman.edu)
-//	 */
-//	private class ServiceRateUpdater implements Runnable {
-//		public boolean stop = false;
-//
-//		public void run() {
-//			while (!stop) {
-//				// Poll if server is not null and server is still accepting
-//				// connections
-//				if (server != null && !server.isStopped()) {
-//					double rate = server.getServiceRate();
-//					if (rate == Double.MIN_VALUE)
-//						WebServer.this.txtServiceRate.setText("Unknown");
-//					else
-//						WebServer.this.txtServiceRate.setText(Double.toString(rate));
-//				}
-//
-//				// Poll at an interval of 500 milliseconds
-//				try {
-//					Thread.sleep(500);
-//				} catch (Exception e) {
-//				}
-//			}
-//		}
-//	}
+	/**
+	 * For constantly updating the service rate in the GUI.
+	 * 
+	 * @author Chandan R. Rupakheti (rupakhet@rose-hulman.edu)
+	 */
+	private class ServiceRateUpdater implements Runnable {
+		public boolean stop = false;
+
+		public void run() {
+			while (!stop) {
+				// Poll if server is not null and server is still accepting
+				// connections
+				if (server != null && !server.isStopped()) {
+					double rate = server.getServiceRate();
+					if (rate == Double.MIN_VALUE)
+						WebServer.this.txtServiceRate.setText("Unknown");
+					else
+						WebServer.this.txtServiceRate.setText(Double.toString(rate));
+				}
+
+				// Poll at an interval of 500 milliseconds
+				try {
+					Thread.sleep(500);
+				} catch (Exception e) {
+				}
+			}
+		}
+	}
 
 	/** Creates new form WebServer */
 	public WebServer() {
@@ -203,7 +203,7 @@ public class WebServer extends JFrame {
 					e1.printStackTrace();
 					System.exit(1); // kill it if we get an error on the server
 				}
-//				rateUpdater = new ServiceRateUpdater();
+				rateUpdater = new ServiceRateUpdater();
 
 				// Disable widgets
 				WebServer.this.disableWidgets();
@@ -212,7 +212,7 @@ public class WebServer extends JFrame {
 				new Thread(new TimerThread(server)).start();
 
 				// Also run the service rate updater thread
-//				new Thread(rateUpdater).start();
+				new Thread(rateUpdater).start();
 
 			}
 		});
@@ -222,8 +222,8 @@ public class WebServer extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				if (server != null && !server.isStopped())
 					server.stop();
-//				if (rateUpdater != null)
-//					rateUpdater.stop = true;
+				if (rateUpdater != null)
+					rateUpdater.stop = true;
 				WebServer.this.enableWidgets();
 			}
 		});
@@ -233,8 +233,8 @@ public class WebServer extends JFrame {
 			public void windowClosing(WindowEvent e) {
 				if (server != null && !server.isStopped())
 					server.stop();
-//				if (rateUpdater != null)
-//					rateUpdater.stop = true;
+				if (rateUpdater != null)
+					rateUpdater.stop = true;
 			}
 		});
 	}
@@ -264,9 +264,9 @@ public class WebServer extends JFrame {
 			this.server.stop();
 		this.server = null;
 
-//		if (this.rateUpdater != null)
-//			this.rateUpdater.stop = true;
-//		this.rateUpdater = null;
+		if (this.rateUpdater != null)
+			this.rateUpdater.stop = true;
+		this.rateUpdater = null;
 		this.enableWidgets();
 	}
 

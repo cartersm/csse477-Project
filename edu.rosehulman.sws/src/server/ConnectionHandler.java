@@ -93,4 +93,11 @@ public class ConnectionHandler implements Runnable {
 		}
 		return this.server.getPlugin(pluginString);
 	}
+
+	/**
+	 * 
+	 */
+	public HttpResponse getResponse() {
+		return this.response;
+	}
 }

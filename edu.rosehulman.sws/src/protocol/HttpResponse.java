@@ -27,6 +27,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.OutputStream;
+import java.io.Serializable;
 import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.util.Collections;
@@ -37,7 +38,7 @@ import java.util.Map;
  * 
  * @author Chandan R. Rupakheti (rupakhet@rose-hulman.edu)
  */
-public class HttpResponse {
+public class HttpResponse implements Serializable {
 	private String version;
 	private int status;
 	private String phrase;
