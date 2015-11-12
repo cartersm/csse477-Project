@@ -21,6 +21,7 @@
 
 package server;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
@@ -34,8 +35,16 @@ import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.esotericsoftware.kryo.Kryo;
+import com.esotericsoftware.kryo.io.Output;
+import com.rabbitmq.client.Channel;
+import com.rabbitmq.client.Connection;
+import com.rabbitmq.client.ConnectionFactory;
+import com.rabbitmq.client.MessageProperties;
+
 import gui.WebServer;
 import protocol.HttpRequest;
+import protocol.Protocol;
 import protocol.plugin.AbstractPlugin;
 
 /**
@@ -45,6 +54,9 @@ import protocol.plugin.AbstractPlugin;
  * @author Chandan R. Rupakheti (rupakhet@rose-hulman.edu)
  */
 public class Server implements Runnable {
+	private static final String HOST = "localhost";
+	static final String SERVER_QUEUE = "server_queue";
+
 	private static final Logger LOGGER = LogManager.getLogger(Server.class);
 	private String rootDirectory;
 	private int port;
@@ -54,37 +66,33 @@ public class Server implements Runnable {
 	private long connections;
 	private long serviceTime;
 
-	private WebServer window;
+	WebServer window;
 	private Map<String, AbstractPlugin> plugins;
-
-	private static final int MAX_SIZE_OF_AUDIT_TRAIL = 100;
-	private List<HttpRequest> auditTrail;
 
 	private final Object waitingRequestsLock = new Object();
 	private List<Socket> waitingRequests;
 
 	private final Object bannedUsersLock = new Object();
 	private List<String> bannedUsers;
-	
+
 	private final Object hadATurnLock = new Object();
 	private List<String> hadATurn;
 
 	private final Object numActiveRequestsLock = new Object();
 	private Map<String, Integer> numActiveRequests;
-	
+
 	private final Object numProcessingRequestsLock = new Object();
 	private int numProcessingRequests;
-	
+
 	private static final int MAX_NUM_REQUESTS_BEFORE_BAN = 10;
-	private static final int MAX_PROCESSING_REQUESTS = 5;
+	static final int MAX_PROCESSING_REQUESTS = 5;
 
 	/**
 	 * @param rootDirectory
 	 * @param port
 	 * @throws IOException
 	 */
-	public Server(String rootDirectory, int port, WebServer window)
-			throws IOException {
+	public Server(String rootDirectory, int port, WebServer window) throws IOException {
 		this.rootDirectory = rootDirectory;
 		this.port = port;
 		this.stop = false;
@@ -99,10 +107,9 @@ public class Server implements Runnable {
 		this.hadATurn = new ArrayList<String>();
 		this.numProcessingRequests = 0;
 
-		this.auditTrail = new ArrayList<HttpRequest>();
-
-		PriorityQueueHandler queueHandler = new PriorityQueueHandler(this);
-		new Thread(queueHandler).start();
+		// FIXME: don't spin these up here
+//		QueueHandler queueHandler = new QueueHandler(this, InetAddress.getLocalHost().getHostAddress(), port);
+//		new Thread(queueHandler).start();
 	}
 
 	/**
@@ -171,14 +178,14 @@ public class Server implements Runnable {
 			this.waitingRequests.add(connection);
 		}
 	}
-	
+
 	public synchronized Socket getNextConnection() {
 		synchronized (this.waitingRequestsLock) {
 			synchronized (this.hadATurnLock) {
 				if (waitingRequests.size() <= 0) {
 					return null;
 				}
-				
+
 				for (int i = 0; i < this.waitingRequests.size(); i++) {
 					Socket connection = this.waitingRequests.get(i);
 					if (this.hadATurn.contains(connection.getInetAddress().toString())) {
@@ -188,7 +195,7 @@ public class Server implements Runnable {
 					this.waitingRequests.remove(i);
 					return connection;
 				}
-				
+
 				this.hadATurn = new ArrayList<String>();
 				Socket connection = this.waitingRequests.get(0);
 				this.waitingRequests.remove(0);
@@ -200,8 +207,7 @@ public class Server implements Runnable {
 	public synchronized void removeAllRequests(String inetAddress) {
 		synchronized (this.waitingRequestsLock) {
 			for (int i = 0; i < waitingRequests.size(); i++) {
-				if (this.waitingRequests.get(i).getInetAddress().toString()
-						.equals(inetAddress)) {
+				if (this.waitingRequests.get(i).getInetAddress().toString().equals(inetAddress)) {
 					this.waitingRequests.remove(i);
 					i--;
 				}
@@ -240,7 +246,7 @@ public class Server implements Runnable {
 			}
 		}
 	}
-	
+
 	public synchronized void decrementNumActiveRequests(String inetAddress) {
 		synchronized (this.numActiveRequestsLock) {
 			if (this.numActiveRequests.containsKey(inetAddress)) {
@@ -251,13 +257,13 @@ public class Server implements Runnable {
 			}
 		}
 	}
-	
+
 	public synchronized void incrementNumProcessingRequests() {
 		synchronized (this.numProcessingRequestsLock) {
 			this.numProcessingRequests++;
 		}
 	}
-	
+
 	public synchronized void decrementNumProcessingRequests() {
 		synchronized (this.numProcessingRequestsLock) {
 			this.numProcessingRequests--;
@@ -265,14 +271,18 @@ public class Server implements Runnable {
 	}
 
 	public void run() {
+		ConnectionFactory factory = new ConnectionFactory();
+		factory.setHost(HOST);
+		factory.setPort(port);
+
 		try {
+			Connection connection = factory.newConnection();
+			Channel channel = connection.createChannel();
+			channel.queueDeclare(SERVER_QUEUE, true, false, false, null);
 			this.welcomeSocket = new ServerSocket(port);
 
 			// Now keep welcoming new connections until stop flag is set to true
 			while (true) {
-				// ////////////////////////////////////////////////////////////
-				// New Code
-
 				// Listen for incoming socket connection
 				// This method block until somebody makes a request
 				Socket connectionSocket = this.welcomeSocket.accept();
@@ -281,8 +291,7 @@ public class Server implements Runnable {
 				if (this.stop)
 					break;
 
-				String inetAddress = connectionSocket.getInetAddress()
-						.toString();
+				String inetAddress = connectionSocket.getInetAddress().toString();
 
 				if (this.userIsBanned(inetAddress)) {
 					System.out.println(inetAddress + "'s request was ignored because he is banned.");
@@ -296,83 +305,21 @@ public class Server implements Runnable {
 					this.removeAllRequests(inetAddress);
 					continue;
 				}
+				Kryo kryo = new Kryo();
+				Output output = new Output(new ByteArrayOutputStream());
+				kryo.writeObject(output, connectionSocket);
+				output.close();
+				channel.basicPublish("", SERVER_QUEUE, MessageProperties.PERSISTENT_TEXT_PLAIN, output.toBytes());
 
 				this.incrementNumActiveRequests(inetAddress);
-				this.addWaitingRequest(connectionSocket);
-
-				// ///////////////////////////////////////////////////////////////
-				// Old Code
-				 // Listen for incoming socket connection
-				 // This method block until somebody makes a request
-				
-//				 Socket connectionSocket = this.welcomeSocket.accept();
-//				
-//				 // Come out of the loop if the stop flag is set
-//				 if (this.stop)
-//				 break;
-//				
-//				 // Create a handler for this incoming connection and start
-//				 // the handler in a new thread
-//				 ConnectionHandler handler = new ConnectionHandler(this,
-//				 connectionSocket);
-//				 new Thread(handler).start();
+				// this.addWaitingRequest(connectionSocket);
 
 			}
 			this.welcomeSocket.close();
+			channel.close();
+			connection.close();
 		} catch (Exception e) {
 			window.showSocketException(e);
-		}
-	}
-
-	private class PriorityQueueHandler implements Runnable {
-
-		private Server server;
-
-		public PriorityQueueHandler(Server server) {
-			this.server = server;
-		}
-
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see java.lang.Runnable#run()
-		 */
-		@Override
-		public void run() {
-			while (true) {				
-				if (server.numProcessingRequests >= Server.MAX_PROCESSING_REQUESTS) {
-					try {
-						System.out.println("Currently processing" + Server.MAX_PROCESSING_REQUESTS + " or more requests. Waiting for processes to finish before processing more.");
-						Thread.sleep(100);
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					continue;
-				}
-				
-				
-				final Socket connection = server.getNextConnection();
-				if (connection == null) {
-					try {
-						Thread.sleep(100);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
-					continue;
-				}
-				
-				 final ConnectionHandler handler = new ConnectionHandler(this.server, connection);
-				 server.incrementNumProcessingRequests();
-				 new Thread(new Runnable() {
-					@Override
-					public void run() {
-						handler.run();
-						server.decrementNumActiveRequests(connection.getInetAddress().toString());
-						server.decrementNumProcessingRequests();
-					} 
-				 }).start();
-			}
 		}
 
 	}
@@ -387,7 +334,8 @@ public class Server implements Runnable {
 		// Set the stop flag to be true
 		this.stop = true;
 		try {
-			// This will force welcomeSocket to come out of the blocked accept()
+			// This will force welcomeSocket to come out of the blocked
+			// accept()
 			// method
 			// in the main loop of the start() method
 			Socket socket = new Socket(InetAddress.getLocalHost(), port);
@@ -435,5 +383,13 @@ public class Server implements Runnable {
 	 */
 	public void removePlugin(String filename) {
 		this.plugins.remove(filename);
+	}
+
+	int getNumProcessingRequests() {
+		return numProcessingRequests;
+	}
+
+	void setNumProcessingRequests(int numProcessingRequests) {
+		this.numProcessingRequests = numProcessingRequests;
 	}
 }
