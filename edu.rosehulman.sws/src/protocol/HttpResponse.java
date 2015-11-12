@@ -38,7 +38,7 @@ import java.util.Map;
  * 
  * @author Chandan R. Rupakheti (rupakhet@rose-hulman.edu)
  */
-public class HttpResponse implements Serializable {
+public class HttpResponse {
 	private String version;
 	private int status;
 	private String phrase;

@@ -38,6 +38,7 @@ import com.rabbitmq.client.MessageProperties;
 import protocol.HttpRequest;
 import protocol.HttpResponse;
 import protocol.Protocol;
+import protocol.WrittenHttpResponse;
 import protocol.plugin.AbstractPlugin;
 
 public class ServerWorker implements Runnable {
@@ -90,7 +91,7 @@ public class ServerWorker implements Runnable {
 				@Override
 				public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties,
 						byte[] body) throws IOException {
-					
+
 					if (getNumProcessingRequests() >= MAX_PROCESSING_REQUESTS) {
 						System.out.println("Currently processing" + MAX_PROCESSING_REQUESTS
 								+ " or more requests. Waiting for processes to finish before processing more.");
@@ -100,10 +101,10 @@ public class ServerWorker implements Runnable {
 							e.printStackTrace();
 						}
 					}
-					
+
 					ByteArrayInputStream in = new ByteArrayInputStream(body);
 					ObjectInputStream objIn = new ObjectInputStream(in);
-					
+
 					HttpRequest request;
 					try {
 						request = (HttpRequest) objIn.readObject();
@@ -121,12 +122,20 @@ public class ServerWorker implements Runnable {
 							decrementNumProcessingRequests();
 							HttpResponse response = handler.getResponse();
 							ByteArrayOutputStream out = new ByteArrayOutputStream();
-							ObjectOutputStream objOut;
+
 							try {
-								objOut = new ObjectOutputStream(out);
-								objOut.writeObject(response);
-								channel.basicPublish("", Server.SERVER_RESPONSE_QUEUE, MessageProperties.PERSISTENT_TEXT_PLAIN, out.toByteArray());
-							} catch (IOException e) {
+								response.write(out);
+								WrittenHttpResponse writtenResponse = new WrittenHttpResponse(out.toByteArray(),
+										response.getSocketHash(), response.getServiceTime());
+								out.close();
+
+								out = new ByteArrayOutputStream();
+								ObjectOutputStream objOut = new ObjectOutputStream(out);
+								objOut.writeObject(writtenResponse);
+
+								channel.basicPublish("", Server.SERVER_RESPONSE_QUEUE,
+										MessageProperties.PERSISTENT_TEXT_PLAIN, out.toByteArray());
+							} catch (Exception e) {
 								e.printStackTrace();
 							}
 						}

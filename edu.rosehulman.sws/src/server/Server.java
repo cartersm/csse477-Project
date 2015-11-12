@@ -54,6 +54,7 @@ import protocol.HttpResponse;
 import protocol.HttpResponseFactory;
 import protocol.Protocol;
 import protocol.ProtocolException;
+import protocol.WrittenHttpResponse;
 
 /**
  * This represents a welcoming server for the incoming TCP request from a HTTP
@@ -345,11 +346,11 @@ public class Server implements Runnable {
 					ByteArrayInputStream in = new ByteArrayInputStream(body);
 					ObjectInputStream objIn = new ObjectInputStream(in);
 					
-					HttpResponse response;
+					WrittenHttpResponse response;
 					try {
-						response = (HttpResponse) objIn.readObject();
-					} catch (ClassNotFoundException e) {
-						e.printStackTrace();
+						response = (WrittenHttpResponse) objIn.readObject();
+					} catch (ClassNotFoundException e1) {
+						e1.printStackTrace();
 						return;
 					}
 					
@@ -357,7 +358,7 @@ public class Server implements Runnable {
 					incrementServiceTime(response.getServiceTime());
 					incrementConnections(1);
 					try {
-						response.write(socket.getOutputStream());
+						socket.getOutputStream().write(response.getData());
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
