@@ -43,6 +43,7 @@ public class HttpResponse {
 	private String phrase;
 	private Map<String, String> header;
 	private File file;
+	private int socketHash;
 
 	/**
 	 * Constructs a HttpResponse object using supplied parameter
@@ -124,6 +125,15 @@ public class HttpResponse {
 		this.header.put(key, value);
 	}
 
+	
+	public void setSocketHash(int hash) {
+		this.socketHash = hash;
+	}
+	
+	public int getSocketHash() {
+		return this.socketHash;
+	}
+	
 	/**
 	 * Writes the data of the http response object to the output stream.
 	 * 

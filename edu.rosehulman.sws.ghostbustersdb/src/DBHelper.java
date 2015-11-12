@@ -28,7 +28,7 @@ public class DBHelper {
 
 	private final String userName = "root";
 	private final String password = "root";
-	private final String serverName = "localhost";
+	private final String serverName = "cartersm-w530.rose-hulman.edu";
 	private final int portNumber = 3306;
 	private final String dbName = "test";
 	private Connection conn = null;

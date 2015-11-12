@@ -23,6 +23,9 @@ package server;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -35,8 +38,6 @@ import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.esotericsoftware.kryo.Kryo;
-import com.esotericsoftware.kryo.io.Output;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
@@ -44,7 +45,10 @@ import com.rabbitmq.client.MessageProperties;
 
 import gui.WebServer;
 import protocol.HttpRequest;
+import protocol.HttpResponse;
+import protocol.HttpResponseFactory;
 import protocol.Protocol;
+import protocol.ProtocolException;
 import protocol.plugin.AbstractPlugin;
 
 /**
@@ -54,10 +58,12 @@ import protocol.plugin.AbstractPlugin;
  * @author Chandan R. Rupakheti (rupakhet@rose-hulman.edu)
  */
 public class Server implements Runnable {
-	private static final String HOST = "localhost";
-	static final String SERVER_QUEUE = "server_queue";
 
 	private static final Logger LOGGER = LogManager.getLogger(Server.class);
+	private static final int MAX_NUM_REQUESTS_BEFORE_BAN = 10;
+	private static final int MAX_PROCESSING_REQUESTS = 5;
+	private static final String HOST = "cartersm-w530.rose-hulman.edu";
+	static final String SERVER_QUEUE = "server-queue";
 	private String rootDirectory;
 	private int port;
 	private boolean stop;
@@ -83,9 +89,7 @@ public class Server implements Runnable {
 
 	private final Object numProcessingRequestsLock = new Object();
 	private int numProcessingRequests;
-
-	private static final int MAX_NUM_REQUESTS_BEFORE_BAN = 10;
-	static final int MAX_PROCESSING_REQUESTS = 5;
+	private Map<Integer, Socket> sockets;
 
 	/**
 	 * @param rootDirectory
@@ -107,9 +111,10 @@ public class Server implements Runnable {
 		this.hadATurn = new ArrayList<String>();
 		this.numProcessingRequests = 0;
 
-		// FIXME: don't spin these up here
-//		QueueHandler queueHandler = new QueueHandler(this, InetAddress.getLocalHost().getHostAddress(), port);
-//		new Thread(queueHandler).start();
+		PriorityQueueHandler queueHandler = new PriorityQueueHandler(this);
+		new Thread(queueHandler).start();
+		
+		this.sockets = new HashMap<>();
 	}
 
 	/**
@@ -271,14 +276,8 @@ public class Server implements Runnable {
 	}
 
 	public void run() {
-		ConnectionFactory factory = new ConnectionFactory();
-		factory.setHost(HOST);
-		factory.setPort(port);
 
 		try {
-			Connection connection = factory.newConnection();
-			Channel channel = connection.createChannel();
-			channel.queueDeclare(SERVER_QUEUE, true, false, false, null);
 			this.welcomeSocket = new ServerSocket(port);
 
 			// Now keep welcoming new connections until stop flag is set to true
@@ -305,23 +304,159 @@ public class Server implements Runnable {
 					this.removeAllRequests(inetAddress);
 					continue;
 				}
-				Kryo kryo = new Kryo();
-				Output output = new Output(new ByteArrayOutputStream());
-				kryo.writeObject(output, connectionSocket);
-				output.close();
-				channel.basicPublish("", SERVER_QUEUE, MessageProperties.PERSISTENT_TEXT_PLAIN, output.toBytes());
 
 				this.incrementNumActiveRequests(inetAddress);
-				// this.addWaitingRequest(connectionSocket);
+				this.addWaitingRequest(connectionSocket);
 
 			}
 			this.welcomeSocket.close();
-			channel.close();
-			connection.close();
 		} catch (Exception e) {
 			window.showSocketException(e);
 		}
+	}
 
+	private class PriorityQueueHandler implements Runnable {
+
+		private Server server;
+
+		public PriorityQueueHandler(Server server) {
+			this.server = server;
+		}
+
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see java.lang.Runnable#run()
+		 */
+		@Override
+		public void run() {
+			ConnectionFactory factory = new ConnectionFactory();
+			factory.setHost(HOST);
+
+			try {
+				Connection connection = factory.newConnection();
+				Channel channel = connection.createChannel();
+				channel.queueDeclare(SERVER_QUEUE, true, false, false, null);
+
+				while (true) {
+					if (server.numProcessingRequests >= Server.MAX_PROCESSING_REQUESTS) {
+						try {
+							System.out.println("Currently processing" + Server.MAX_PROCESSING_REQUESTS
+									+ " or more requests. Waiting for processes to finish before processing more.");
+							Thread.sleep(100);
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
+						continue;
+					}
+
+					final Socket socket = server.getNextConnection();
+					if (socket == null) {
+						try {
+							Thread.sleep(100);
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
+						continue;
+					}
+
+					long start = System.currentTimeMillis();
+
+					InputStream inStream = null;
+					OutputStream outStream = null;
+
+					try {
+						inStream = socket.getInputStream();
+						outStream = socket.getOutputStream();
+					} catch (Exception e) {
+						// Cannot do anything if we have exception reading input
+						// or output
+						// stream
+						// May be have text to log this for further analysis?
+						e.printStackTrace();
+
+						// Increment number of connections by 1
+						server.incrementConnections(1);
+						// Get the end time
+						long end = System.currentTimeMillis();
+						this.server.incrementServiceTime(end - start);
+						continue;
+					}
+
+					// At this point we have the input and output stream of the
+					// socket
+					// Now lets create a HttpRequest object
+					HttpRequest request = null;
+					HttpResponse response = null;
+					try {
+						request = HttpRequest.read(inStream);
+						request.setSocketHash(socket.hashCode());
+					} catch (ProtocolException pe) {
+						// We have some sort of protocol exception. Get its
+						// status code and
+						// create response
+						// We know only two kind of exception is possible inside
+						// fromInputStream
+						// Protocol.BAD_REQUEST_CODE and
+						// Protocol.NOT_SUPPORTED_CODE
+						int status = pe.getStatus();
+						if (status == Protocol.BAD_REQUEST_CODE) {
+							response = HttpResponseFactory.create400BadRequest(Protocol.CLOSE);
+						}
+						// TODO: Handle version not supported code as well
+					} catch (Exception e) {
+						e.printStackTrace();
+						// For any other error, we will create bad request
+						// response as well
+						response = HttpResponseFactory.create400BadRequest(Protocol.CLOSE);
+					}
+
+					if (response != null) {
+						// Means there was an error, now write the response
+						// object to the
+						// socket
+						try {
+							response.write(outStream);
+							// System.out.println(response);
+						} catch (Exception e) {
+							// We will ignore this exception
+							e.printStackTrace();
+						}
+
+						// Increment number of connections by 1
+						server.incrementConnections(1);
+						// Get the end time
+						long end = System.currentTimeMillis();
+						this.server.incrementServiceTime(end - start);
+						return;
+					}
+					
+					ByteArrayOutputStream out = new ByteArrayOutputStream();
+					ObjectOutputStream objOut = new ObjectOutputStream(out);
+					objOut.writeObject(request);
+					
+					channel.basicPublish("", SERVER_QUEUE, MessageProperties.PERSISTENT_TEXT_PLAIN, out.toByteArray());
+					sockets.put(socket.hashCode(), socket);
+					
+					objOut.close();
+					out.close();
+					
+					
+					final ConnectionHandler handler = new ConnectionHandler(this.server, socket);
+					server.incrementNumProcessingRequests();
+					new Thread(new Runnable() {
+						@Override
+						public void run() {
+							handler.run();
+							server.decrementNumActiveRequests(socket.getInetAddress().toString());
+							server.decrementNumProcessingRequests();
+						}
+					}).start();
+				}
+			} catch (Exception e) {
+				window.showSocketException(e);
+			}
+		}
 	}
 
 	/**

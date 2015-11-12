@@ -23,8 +23,10 @@
 package protocol;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -35,12 +37,15 @@ import java.util.StringTokenizer;
  * 
  * @author Chandan R. Rupakheti (rupakhet@rose-hulman.edu)
  */
-public class HttpRequest {
+public class HttpRequest implements Serializable {
+	private static final long serialVersionUID = -3966788745882797681L;
+	
 	private String method;
 	private String uri;
 	private String version;
 	private Map<String, String> header;
 	private char[] body;
+	private int socketHash;
 	
 	private HttpRequest() {
 		this.header = new HashMap<String, String>();
@@ -85,6 +90,14 @@ public class HttpRequest {
 	public Map<String, String> getHeader() {
 		// Lets return the unmodifable view of the header map
 		return Collections.unmodifiableMap(header);
+	}
+	
+	public void setSocketHash(int hash) {
+		this.socketHash = hash;
+	}
+	
+	public int getSocketHash() {
+		return this.socketHash;
 	}
 
 	/**
