@@ -21,10 +21,17 @@
 
 package server;
 
+import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -36,6 +43,9 @@ import org.apache.logging.log4j.Logger;
 
 import gui.WebServer;
 import protocol.HttpRequest;
+import protocol.HttpResponse;
+import protocol.HttpResponseFactory;
+import protocol.Protocol;
 import protocol.plugin.AbstractPlugin;
 
 /**
@@ -100,9 +110,6 @@ public class Server implements Runnable {
 		this.numProcessingRequests = 0;
 
 		this.auditTrail = new ArrayList<HttpRequest>();
-
-		PriorityQueueHandler queueHandler = new PriorityQueueHandler(this);
-		new Thread(queueHandler).start();
 	}
 
 	/**
@@ -270,8 +277,6 @@ public class Server implements Runnable {
 
 			// Now keep welcoming new connections until stop flag is set to true
 			while (true) {
-				// ////////////////////////////////////////////////////////////
-				// New Code
 
 				// Listen for incoming socket connection
 				// This method block until somebody makes a request
@@ -280,42 +285,9 @@ public class Server implements Runnable {
 				// Come out of the loop if the stop flag is set
 				if (this.stop)
 					break;
-
-				String inetAddress = connectionSocket.getInetAddress()
-						.toString();
-
-				if (this.userIsBanned(inetAddress)) {
-					System.out.println(inetAddress + "'s request was ignored because he is banned.");
-					continue;
-				}
-
-				int numActiveRequests = this.getNumActiveRequests(inetAddress);
-				if (numActiveRequests > Server.MAX_NUM_REQUESTS_BEFORE_BAN) {
-					System.out.println(inetAddress + " was banned for making too many requests.");
-					this.addBanneduser(inetAddress);
-					this.removeAllRequests(inetAddress);
-					continue;
-				}
-
-				this.incrementNumActiveRequests(inetAddress);
-				this.addWaitingRequest(connectionSocket);
-
-				// ///////////////////////////////////////////////////////////////
-				// Old Code
-				 // Listen for incoming socket connection
-				 // This method block until somebody makes a request
 				
-//				 Socket connectionSocket = this.welcomeSocket.accept();
-//				
-//				 // Come out of the loop if the stop flag is set
-//				 if (this.stop)
-//				 break;
-//				
-//				 // Create a handler for this incoming connection and start
-//				 // the handler in a new thread
-//				 ConnectionHandler handler = new ConnectionHandler(this,
-//				 connectionSocket);
-//				 new Thread(handler).start();
+				ManagerThread manager = new ManagerThread(connectionSocket);
+				new Thread(manager).start();
 
 			}
 			this.welcomeSocket.close();
@@ -324,12 +296,12 @@ public class Server implements Runnable {
 		}
 	}
 
-	private class PriorityQueueHandler implements Runnable {
+	private class ManagerThread implements Runnable {
 
-		private Server server;
+		private Socket connectionSocket;
 
-		public PriorityQueueHandler(Server server) {
-			this.server = server;
+		public ManagerThread(Socket connectionSocket) {
+			this.connectionSocket = connectionSocket;
 		}
 
 		/*
@@ -339,39 +311,31 @@ public class Server implements Runnable {
 		 */
 		@Override
 		public void run() {
-			while (true) {				
-				if (server.numProcessingRequests >= Server.MAX_PROCESSING_REQUESTS) {
-					try {
-						System.out.println("Currently processing" + Server.MAX_PROCESSING_REQUESTS + " or more requests. Waiting for processes to finish before processing more.");
-						Thread.sleep(100);
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					continue;
+			InputStream in;
+			try {
+				in = connectionSocket.getInputStream();
+				OutputStream outStream = connectionSocket.getOutputStream();
+				
+				HttpRequest request = HttpRequest.read(in);				
+				
+				System.out.println(request.getUri());
+				if (request.getUri().contains("favicon")) {
+					return;
 				}
 				
+				String responseString = Server.sendGET("http://localhost:8081" + request.getUri());
 				
-				final Socket connection = server.getNextConnection();
-				if (connection == null) {
-					try {
-						Thread.sleep(100);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
-					continue;
-				}
 				
-				 final ConnectionHandler handler = new ConnectionHandler(this.server, connection);
-				 server.incrementNumProcessingRequests();
-				 new Thread(new Runnable() {
-					@Override
-					public void run() {
-						handler.run();
-						server.decrementNumActiveRequests(connection.getInetAddress().toString());
-						server.decrementNumProcessingRequests();
-					} 
-				 }).start();
+				BufferedOutputStream out = new BufferedOutputStream(outStream, Protocol.CHUNK_LENGTH);
+				out.write(responseString.getBytes());
+				out.flush();
+				out.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 		}
 
@@ -436,4 +400,32 @@ public class Server implements Runnable {
 	public void removePlugin(String filename) {
 		this.plugins.remove(filename);
 	}
+	
+	private static final String USER_AGENT = "Mozilla/5.0";
+	
+	private static String sendGET(String url) throws IOException {
+        URL obj = new URL(url);
+        HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+        con.setRequestMethod("GET");
+        con.setRequestProperty("User-Agent", USER_AGENT);
+        int responseCode = con.getResponseCode();
+        if (responseCode == HttpURLConnection.HTTP_OK) { // success
+            BufferedReader in = new BufferedReader(new InputStreamReader(
+                    con.getInputStream()));
+            String inputLine;
+            StringBuffer response = new StringBuffer();
+ 
+            while ((inputLine = in.readLine()) != null) {
+                response.append(inputLine);
+            }
+            in.close();
+            
+            return response.toString();
+        } else {
+            System.out.println("GET request not worked");
+        }
+        
+        return null;
+ 
+    }
 }
