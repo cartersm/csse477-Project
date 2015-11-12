@@ -27,19 +27,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.File;
 import java.io.IOException;
-import java.net.URI;
-import java.nio.file.DirectoryIteratorException;
-import java.nio.file.DirectoryStream;
-import java.nio.file.FileSystems;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardWatchEventKinds;
-import java.nio.file.WatchEvent;
-import java.nio.file.WatchKey;
-import java.nio.file.WatchService;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -52,9 +40,6 @@ import javax.swing.JTextField;
 import javax.swing.SpringLayout;
 import javax.swing.WindowConstants;
 
-import protocol.Protocol;
-import protocol.plugin.AbstractPlugin;
-import server.JarClassLoader;
 import server.Server;
 
 /**
@@ -65,7 +50,6 @@ import server.Server;
  */
 public class WebServer extends JFrame {
 	private static final long serialVersionUID = 5042579745743827174L;
-	private static final String PLUGIN_ROOT = new File("plugins").getAbsolutePath();
 
 	private JPanel panelRunServer;
 	private JLabel lblPortNumber;
@@ -81,37 +65,36 @@ public class WebServer extends JFrame {
 	private JTextField txtServiceRate;
 
 	private Server server;
-	private ServiceRateUpdater rateUpdater;
-	private WatchService watcher;
+//	private ServiceRateUpdater rateUpdater;
 
-	/**
-	 * For constantly updating the service rate in the GUI.
-	 * 
-	 * @author Chandan R. Rupakheti (rupakhet@rose-hulman.edu)
-	 */
-	private class ServiceRateUpdater implements Runnable {
-		public boolean stop = false;
-
-		public void run() {
-			while (!stop) {
-				// Poll if server is not null and server is still accepting
-				// connections
-				if (server != null && !server.isStopped()) {
-					double rate = server.getServiceRate();
-					if (rate == Double.MIN_VALUE)
-						WebServer.this.txtServiceRate.setText("Unknown");
-					else
-						WebServer.this.txtServiceRate.setText(Double.toString(rate));
-				}
-
-				// Poll at an interval of 500 milliseconds
-				try {
-					Thread.sleep(500);
-				} catch (Exception e) {
-				}
-			}
-		}
-	}
+//	/**
+//	 * For constantly updating the service rate in the GUI.
+//	 * 
+//	 * @author Chandan R. Rupakheti (rupakhet@rose-hulman.edu)
+//	 */
+//	private class ServiceRateUpdater implements Runnable {
+//		public boolean stop = false;
+//
+//		public void run() {
+//			while (!stop) {
+//				// Poll if server is not null and server is still accepting
+//				// connections
+//				if (server != null && !server.isStopped()) {
+//					double rate = server.getServiceRate();
+//					if (rate == Double.MIN_VALUE)
+//						WebServer.this.txtServiceRate.setText("Unknown");
+//					else
+//						WebServer.this.txtServiceRate.setText(Double.toString(rate));
+//				}
+//
+//				// Poll at an interval of 500 milliseconds
+//				try {
+//					Thread.sleep(500);
+//				} catch (Exception e) {
+//				}
+//			}
+//		}
+//	}
 
 	/** Creates new form WebServer */
 	public WebServer() {
@@ -220,7 +203,7 @@ public class WebServer extends JFrame {
 					e1.printStackTrace();
 					System.exit(1); // kill it if we get an error on the server
 				}
-				rateUpdater = new ServiceRateUpdater();
+//				rateUpdater = new ServiceRateUpdater();
 
 				// Disable widgets
 				WebServer.this.disableWidgets();
@@ -229,13 +212,8 @@ public class WebServer extends JFrame {
 				new Thread(new TimerThread(server)).start();
 
 				// Also run the service rate updater thread
-				new Thread(rateUpdater).start();
+//				new Thread(rateUpdater).start();
 
-				try {
-					initDirectoryWatcher();
-				} catch (IOException e1) {
-					e1.printStackTrace();
-				}
 			}
 		});
 
@@ -244,8 +222,8 @@ public class WebServer extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				if (server != null && !server.isStopped())
 					server.stop();
-				if (rateUpdater != null)
-					rateUpdater.stop = true;
+//				if (rateUpdater != null)
+//					rateUpdater.stop = true;
 				WebServer.this.enableWidgets();
 			}
 		});
@@ -255,137 +233,12 @@ public class WebServer extends JFrame {
 			public void windowClosing(WindowEvent e) {
 				if (server != null && !server.isStopped())
 					server.stop();
-				if (rateUpdater != null)
-					rateUpdater.stop = true;
+//				if (rateUpdater != null)
+//					rateUpdater.stop = true;
 			}
 		});
 	}
 	
-	private void initDirectoryWatcher() throws IOException {
-		// Watch for directory changes
-		this.watcher = FileSystems.getDefault().newWatchService();
-		Path path = Paths.get(URI.create("file:///" + PLUGIN_ROOT.replace("\\", "//").replace(" ", "%20")));
-		path.register(this.watcher, StandardWatchEventKinds.ENTRY_CREATE, StandardWatchEventKinds.ENTRY_DELETE,
-				StandardWatchEventKinds.ENTRY_MODIFY);
-
-		try (DirectoryStream<Path> stream = Files.newDirectoryStream(path)) {
-			for (Path file : stream) {
-				addPlugin(file.toFile().getName());
-			}
-		} catch (IOException | DirectoryIteratorException x) {
-			System.err.println(x);
-		}
-
-		// Listen asynchronously for directory changes
-		new Thread(new Runnable() {
-			@Override
-			public void run() {
-				try {
-					listenForNewPlugins();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-
-		}, "DirectoryWatcher").start();
-	}
-
-	private void listenForNewPlugins() throws IOException {
-		for (;;) {
-			WatchKey key;
-			try {
-				key = this.watcher.take();
-			} catch (InterruptedException x) {
-				return;
-			}
-
-			for (WatchEvent<?> event : key.pollEvents()) {
-				WatchEvent.Kind<?> kind = event.kind();
-
-				if (kind == StandardWatchEventKinds.OVERFLOW) {
-					continue;
-				}
-
-				@SuppressWarnings("unchecked")
-				WatchEvent<Path> ev = (WatchEvent<Path>) event;
-				String filename = ev.context().toFile().getName();
-
-				// Ignore if it's not a JAR
-				if (!filename.endsWith(".jar")) {
-					continue;
-				}
-
-				if (kind == StandardWatchEventKinds.ENTRY_CREATE || kind == StandardWatchEventKinds.ENTRY_MODIFY) {
-					addPlugin(filename);
-				} else if (kind == StandardWatchEventKinds.ENTRY_DELETE) {
-					removePlugin(filename);
-				}
-			}
-
-			if (!key.reset()) {
-				throw new IOException("Plugin file is no longer accessible");
-			}
-		}
-	}
-
-	private void addPlugin(String filename) {
-		JarClassLoader jarLoader = new JarClassLoader(PLUGIN_ROOT + "/" + filename);
-		/* Load the class from the jar file and resolve it. */
-		Class<?> c;
-		try {
-			String className = filename.substring(0, filename.lastIndexOf('.'));
-			// FIXME: the plugin has to be in the toplevel of its jar file
-			c = (Class<?>) jarLoader.loadClass(className, true);
-		} catch (ClassNotFoundException e1) {
-			e1.printStackTrace();
-			return;
-		}
-
-		/*
-		 * Create an instance of the class.
-		 * 
-		 * Note that created object's constructor-taking-no-arguments will be
-		 * called as part of the object's creation.
-		 */
-		Object o = null;
-		try {
-			final String pluginRootDirectory = this.server.getRootDirectory() + Protocol.SYSTEM_SEPARATOR + c.getSimpleName();
-			o = c.getDeclaredConstructor(String.class).newInstance(pluginRootDirectory);
-		} catch (Exception e) {
-			e.printStackTrace();
-			return;
-		}
-		if (o instanceof AbstractPlugin) {
-			AbstractPlugin plugin = (AbstractPlugin) o;
-			for (AbstractPlugin loadedPlugin : this.server.getPlugins().values()) {
-				// if plugin's simple name exists in the map...
-				if (loadedPlugin.getUriName().equals(plugin.getUriName())) {
-					// and plugin's fully-qualified name equals that plugin's
-					// fully-qualified name
-					if (loadedPlugin.getClass().getName().equals(plugin.getClass().getName())) {
-						// ... then they are (assumed to be) the same, so
-						// overwrite the existing plugin.
-						System.out.println("Updating plugin " + plugin.getUriName());
-						this.server.addPlugin(plugin.getUriName(), plugin);
-						return;
-					} else {
-						// Else, they're different and we have a name clash, so
-						// ignore the new one.
-						return; // TODO: throw some sort of error here?
-					}
-				}
-			}
-			System.out.println("Adding new plugin " + plugin.getUriName());
-			this.server.addPlugin(plugin.getUriName(), plugin);
-		}
-		return;
-	}
-
-	private void removePlugin(String filename) {
-		System.out.println("Removing plugin " + filename);
-		this.server.removePlugin(filename);
-	}
-
 	private void disableWidgets() {
 		this.txtPortNumber.setEnabled(false);
 		this.butSelect.setEnabled(false);
@@ -411,9 +264,9 @@ public class WebServer extends JFrame {
 			this.server.stop();
 		this.server = null;
 
-		if (this.rateUpdater != null)
-			this.rateUpdater.stop = true;
-		this.rateUpdater = null;
+//		if (this.rateUpdater != null)
+//			this.rateUpdater.stop = true;
+//		this.rateUpdater = null;
 		this.enableWidgets();
 	}
 

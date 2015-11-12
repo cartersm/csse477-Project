@@ -44,6 +44,7 @@ public class HttpResponse {
 	private Map<String, String> header;
 	private File file;
 	private int socketHash;
+	private long serviceTime;
 
 	/**
 	 * Constructs a HttpResponse object using supplied parameter
@@ -65,6 +66,7 @@ public class HttpResponse {
 		this.phrase = phrase;
 		this.header = header;
 		this.file = file;
+		this.serviceTime = 0L;
 	}
 
 	/**
@@ -222,6 +224,14 @@ public class HttpResponse {
 		}
 		buffer.append("\n----------------------------------\n");
 		return buffer.toString();
+	}
+
+	public void setServiceTime(long time) {
+		this.serviceTime = time;
+	}
+	
+	public long getServiceTime() {
+		return this.serviceTime;
 	}
 
 }

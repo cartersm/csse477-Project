@@ -3,7 +3,7 @@ package server;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
-import java.net.Socket;
+import java.io.ObjectInputStream;
 import java.net.URI;
 import java.net.UnknownHostException;
 import java.nio.file.DirectoryIteratorException;
@@ -16,19 +16,14 @@ import java.nio.file.StandardWatchEventKinds;
 import java.nio.file.WatchEvent;
 import java.nio.file.WatchKey;
 import java.nio.file.WatchService;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.esotericsoftware.kryo.Kryo;
-import com.esotericsoftware.kryo.io.Input;
 import com.rabbitmq.client.AMQP;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
@@ -41,19 +36,16 @@ import protocol.HttpRequest;
 import protocol.Protocol;
 import protocol.plugin.AbstractPlugin;
 
-class QueueHandler implements Runnable {
-	private static final int MAX_NUM_REQUESTS_BEFORE_BAN = 10;
+public class ServerWorker implements Runnable {
 	private static final int MAX_PROCESSING_REQUESTS = 5;
 	private static final String PLUGIN_ROOT = new File("plugins").getAbsolutePath();
 
-	private static final Logger LOGGER = LogManager.getLogger(QueueHandler.class);
+	private static final Logger LOGGER = LogManager.getLogger(ServerWorker.class);
 
 	private String host;
 	private int port;
 	private String rootDirectory;
 
-	private long connections;
-	private long serviceTime;
 	private Map<String, AbstractPlugin> plugins;
 	private WatchService watcher;
 
@@ -63,29 +55,15 @@ class QueueHandler implements Runnable {
 	private final Object numProcessingRequestsLock = new Object();
 	private int numProcessingRequests;
 
-	private final Object bannedUsersLock = new Object();
-	private List<String> bannedUsers;
-
-	private final Object waitingRequestsLock = new Object();
-	private List<Socket> waitingRequests;
-
-	private final Object hadATurnLock = new Object();
-	private List<String> hadATurn;
-
-	public QueueHandler(String host, int port, String rootDirectory) throws IOException {
+	public ServerWorker(String host, int port, String rootDirectory) throws IOException {
 		this.host = host;
 		this.port = port;
 		this.rootDirectory = rootDirectory;
 
-		this.connections = 0;
-		this.serviceTime = 0;
 		this.plugins = new HashMap<>();
 
 		this.numActiveRequests = new HashMap<String, Integer>();
 		this.numProcessingRequests = 0;
-		this.bannedUsers = new ArrayList<String>();
-		this.waitingRequests = new ArrayList<Socket>();
-		this.hadATurn = new ArrayList<String>();
 
 		initDirectoryWatcher();
 	}
@@ -116,39 +94,26 @@ class QueueHandler implements Runnable {
 							e.printStackTrace();
 						}
 					}
-
-//					System.out.println("Input:  " + Arrays.toString(body));
 					
-					Input input = new Input();
-					input.setBuffer(body);
-					final Socket socket = new Kryo().readObject(input, Socket.class);
-
-					String inetAddress = socket.getInetAddress().toString();
-
-					if (userIsBanned(inetAddress)) {
-						System.out.println(inetAddress + "'s request was ignored because he is banned.");
-						channel.basicAck(envelope.getDeliveryTag(), false);
+					ByteArrayInputStream in = new ByteArrayInputStream(body);
+					ObjectInputStream objIn = new ObjectInputStream(in);
+					
+					HttpRequest request;
+					try {
+						request = (HttpRequest) objIn.readObject();
+					} catch (ClassNotFoundException e) {
+						e.printStackTrace();
 						return;
 					}
 
-					int numActiveRequests = getNumActiveRequests(inetAddress);
-					if (numActiveRequests > MAX_NUM_REQUESTS_BEFORE_BAN) {
-						System.out.println(inetAddress + " was banned for making too many requests.");
-						addBanneduser(inetAddress);
-						removeAllRequests(inetAddress);
-						channel.basicAck(envelope.getDeliveryTag(), false);
-						return;
-					}
-					incrementNumActiveRequests(inetAddress);
-
-					final ConnectionHandler handler = new ConnectionHandler(QueueHandler.this, socket);
+					final ConnectionHandler handler = new ConnectionHandler(ServerWorker.this, request);
 					incrementNumProcessingRequests();
 					new Thread(new Runnable() {
 						@Override
 						public void run() {
 							handler.run();
-							decrementNumActiveRequests(socket.getInetAddress().toString());
 							decrementNumProcessingRequests();
+							
 						}
 					}).start();
 
@@ -210,99 +175,6 @@ class QueueHandler implements Runnable {
 
 	void setNumProcessingRequests(int numProcessingRequests) {
 		this.numProcessingRequests = numProcessingRequests;
-	}
-
-	public synchronized void addBanneduser(String inetAddress) {
-		synchronized (this.bannedUsersLock) {
-			this.bannedUsers.add(inetAddress);
-		}
-	}
-
-	public synchronized boolean userIsBanned(String inetAddress) {
-		synchronized (this.bannedUsersLock) {
-			return this.bannedUsers.contains(inetAddress);
-		}
-	}
-
-	public synchronized void removeAllRequests(String inetAddress) {
-		synchronized (this.waitingRequestsLock) {
-			for (int i = 0; i < waitingRequests.size(); i++) {
-				if (this.waitingRequests.get(i).getInetAddress().toString().equals(inetAddress)) {
-					this.waitingRequests.remove(i);
-					i--;
-				}
-			}
-		}
-	}
-
-	/**
-	 * The entry method for the main server thread that accepts incoming TCP
-	 * connection request and creates a {@link ConnectionHandler} for the
-	 * request.
-	 */
-	public synchronized void addWaitingRequest(Socket connection) {
-		synchronized (this.waitingRequestsLock) {
-			this.waitingRequests.add(connection);
-		}
-	}
-
-	public synchronized Socket getNextConnection() {
-		synchronized (this.waitingRequestsLock) {
-			synchronized (this.hadATurnLock) {
-				if (waitingRequests.size() <= 0) {
-					return null;
-				}
-
-				for (int i = 0; i < this.waitingRequests.size(); i++) {
-					Socket connection = this.waitingRequests.get(i);
-					if (this.hadATurn.contains(connection.getInetAddress().toString())) {
-						continue;
-					}
-					this.hadATurn.add(connection.getInetAddress().toString());
-					this.waitingRequests.remove(i);
-					return connection;
-				}
-
-				this.hadATurn = new ArrayList<String>();
-				Socket connection = this.waitingRequests.get(0);
-				this.waitingRequests.remove(0);
-				return connection;
-			}
-		}
-	}
-
-	/**
-	 * Increments number of connection by the supplied value. Synchronized to be
-	 * used in threaded environment.
-	 * 
-	 * @param value
-	 */
-	public synchronized void incrementConnections(long value) {
-		this.connections += value;
-	}
-
-	/**
-	 * Increments the service time by the supplied value. Synchronized to be
-	 * used in threaded environment.
-	 * 
-	 * @param value
-	 */
-	public synchronized void incrementServiceTime(long value) {
-		this.serviceTime += value;
-	}
-
-	/**
-	 * Returns connections serviced per second. Synchronized to be used in
-	 * threaded environment.
-	 * 
-	 * @return
-	 */
-	public synchronized double getServiceRate() {
-		if (this.serviceTime == 0)
-			return Long.MIN_VALUE;
-		double rate = this.connections / (double) this.serviceTime;
-		rate = rate * 1000;
-		return rate;
 	}
 
 	public synchronized void addToAuditTrail(HttpRequest request) {
@@ -470,13 +342,11 @@ class QueueHandler implements Runnable {
 		int port = Integer.parseInt(ipString.substring(ipString.indexOf(":") + 1));
 
 		String currentDirectory = new File(".").getAbsolutePath();
-		
+
 		System.out.println("Specify the root directory to use, relative to " + currentDirectory + ":");
 		String relativePath = in.nextLine();
 		in.close();
-		
-		
 
-		new QueueHandler(host, port, relativePath).run();
+		new ServerWorker(host, port, relativePath).run();
 	}
 }

@@ -9,7 +9,7 @@
 		</Console>
 	</Appenders>
 	<Loggers>
-		<Logger name="server" level="info">
+		<Logger name="queueHandler" level="info">
 			<AppenderRef ref="FileLogger" />
 		</Logger>
 		<Root level="trace">
