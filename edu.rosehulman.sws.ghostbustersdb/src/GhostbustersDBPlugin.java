@@ -27,8 +27,6 @@ public class GhostbustersDBPlugin extends AbstractPlugin {
 		}
 		
 		int index = uri.indexOf("/");
-		uri = uri.substring(index + 1);
-		index = uri.indexOf("/");
 		System.out.println("URI = " + uri);
 		if (index == -1) {
 			// We should have only the servlet name.

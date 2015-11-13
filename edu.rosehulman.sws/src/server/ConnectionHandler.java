@@ -29,9 +29,9 @@ import protocol.plugin.AbstractPlugin;
 
 /**
  * This class is responsible for handling a incoming request by creating a
- * {@link HttpRequest} object and sending the appropriate this.response be creating a
- * {@link Httpthis.response} object. It implements {@link Runnable} to be used in
- * multi-threaded environment.
+ * {@link HttpRequest} object and sending the appropriate this.response be
+ * creating a {@link Httpthis.response} object. It implements {@link Runnable}
+ * to be used in multi-threaded environment.
  * 
  * @author Chandan R. Rupakheti (rupakhet@rose-hulman.edu)
  */
@@ -49,8 +49,8 @@ public class ConnectionHandler implements Runnable {
 	/**
 	 * The entry point for connection handler. It first parses incoming request
 	 * and creates a {@link HttpRequest} object, then it creates an appropriate
-	 * {@link Httpthis.response} object and sends the this.response back to the client
-	 * (web browser).
+	 * {@link Httpthis.response} object and sends the this.response back to the
+	 * client (web browser).
 	 */
 	public void run() {
 		long start = System.currentTimeMillis();
@@ -86,17 +86,10 @@ public class ConnectionHandler implements Runnable {
 
 	private AbstractPlugin getPluginFromUri(String uri) {
 		final String pluginString;
-		if (uri.contains("v1/")) {
-			pluginString = uri.substring(uri.indexOf("v1/") + 3, uri.indexOf("/", 4));
-		} else {
-			pluginString = uri.substring(1, uri.indexOf("/", 1));
-		}
+		pluginString = uri.substring(1, uri.indexOf("/", 1));
 		return this.server.getPlugin(pluginString);
 	}
 
-	/**
-	 * 
-	 */
 	public HttpResponse getResponse() {
 		return this.response;
 	}
