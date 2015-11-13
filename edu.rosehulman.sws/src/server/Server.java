@@ -63,7 +63,7 @@ import protocol.WrittenHttpResponse;
  * @author Chandan R. Rupakheti (rupakhet@rose-hulman.edu)
  */
 public class Server implements Runnable {
-
+	static final int QOS = 0; // FIXME: change to a reasonable value
 	private static final Logger LOGGER = LogManager.getLogger(Server.class);
 	private static final int MAX_NUM_REQUESTS_BEFORE_BAN = 10;
 	private static final int MAX_PROCESSING_REQUESTS = 5;
@@ -177,11 +177,6 @@ public class Server implements Runnable {
 		this.serviceTime += value;
 	}
 
-	/**
-	 * The entry method for the main server thread that accepts incoming TCP
-	 * connection request and creates a {@link ConnectionHandler} for the
-	 * request.
-	 */
 	public synchronized void addWaitingRequest(Socket connection) {
 		synchronized (this.waitingRequestsLock) {
 			this.waitingRequests.add(connection);
@@ -323,9 +318,6 @@ public class Server implements Runnable {
 		}
 	}
 	
-	/**
-	 * 
-	 */
 	private void initConsumer() {
 		ConnectionFactory factory = new ConnectionFactory();
 		factory.setHost(HOST);
@@ -337,7 +329,7 @@ public class Server implements Runnable {
 			final Channel channel = connection.createChannel();
 			channel.queueDeclare(Server.SERVER_RESPONSE_QUEUE, true, false, false, null);
 
-			channel.basicQos(1);
+			channel.basicQos(QOS);
 			final Consumer consumer = new DefaultConsumer(channel) {
 				@Override
 				public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties,
@@ -357,6 +349,7 @@ public class Server implements Runnable {
 					Socket socket = sockets.get(response.getSocketHash());
 					incrementServiceTime(response.getServiceTime());
 					incrementConnections(1);
+					decrementNumActiveRequests(socket.getInetAddress().toString());
 					try {
 						socket.getOutputStream().write(response.getData());
 					} catch (Exception e) {
